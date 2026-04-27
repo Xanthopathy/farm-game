@@ -3,7 +3,15 @@
 |-- package-lock.json
 |-- package.json
 `-- src
+    |-- entities
+    |   |-- Player.js
+    |   `-- Tile.js
     |-- main.js
-    `-- style.css
+    |-- scenes
+    |   `-- MainGame.js
+    |-- style.css
+    `-- utils
+        |-- Debug.js
+        `-- GridMath.js
 
-1 directory, 5 files
+4 directories, 10 files
