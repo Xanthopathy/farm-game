@@ -1,0 +1,38 @@
+Finding high-quality free assets for a game like the one in the video (top-down pixel art) is actually pretty easy if you know where to look.
+
+Since the tutorial uses CC0 (public domain) style assets, here are the best places to find similar free art:
+
+Top Recommendations
+Kenney.nl: Often called the "Gold Standard" of free assets. Everything is CC0, meaning you can use it for anything without even giving credit. Look for his "Pixel" or "RPG" packs.
+
+Itch.io (Free Assets): This is a goldmine. Thousands of indie artists post free packs here. You can filter specifically for "Top-down" and "Pixel Art."
+
+OpenGameArt.org: An older but massive community-driven site. You can find everything from character sprite sheets to environment tilesets.
+
+CraftPix (Freebies Section): They have high-quality "Top-down" tilesets (grass, paths, towns) that would work perfectly for a Firebase multiplayer map.
+
+
+.
+├── assets/                 # Raw and processed game assets
+│   ├── images/             # Sprite sheets and tilesets
+│   ├── maps/               # Tiled JSON files (if using Tiled)
+│   └── atlas/              # .pct or .json atlas files
+├── src/
+│   ├── main.js             # Entry point / Game configuration
+│   ├── constants.js        # Grid size, tile types, crop growth rates
+│   ├── scenes/             # Phaser Scene classes
+│   │   ├── Boot.js         # Asset loading
+│   │   ├── MainGame.js     # The core farming loop
+│   │   └── UI.js           # Gold, Water, and Inventory overlays
+│   ├── entities/           # Logic for specific game objects
+│   │   ├── Player.js       # Movement and interaction logic
+│   │   ├── Crop.js         # Growth states and harvesting logic
+│   │   └── Tile.js         # State machine (Dirt, Tilled, Watered)
+│   ├── utils/              # Helper functions
+│   │   └── GridMath.js     # Mapping world coords to array indices
+│   └── style.css
+├── index.html
+├── package.json
+├── notes/                  # Keep your proj.md and other docs here
+│   └── proj.md
+└── .gitignore
