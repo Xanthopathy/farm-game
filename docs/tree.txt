@@ -2,8 +2,15 @@
 |-- index.html
 |-- package-lock.json
 |-- package.json
+|-- public
+|   `-- assets
+|       |-- objects.png
+|       |-- player.png
+|       `-- terrain.png
 `-- src
+    |-- constants.js
     |-- entities
+    |   |-- Crop.js
     |   |-- Player.js
     |   `-- Tile.js
     |-- main.js
@@ -14,4 +21,4 @@
         |-- Debug.js
         `-- GridMath.js
 
-4 directories, 10 files
+6 directories, 15 files

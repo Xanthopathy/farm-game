@@ -5,6 +5,7 @@ import { Player } from "../entities/Player";
 import { getGridCoords } from "../utils/GridMath";
 import { DebugDisplay } from "../utils/Debug";
 import { Tile } from "../entities/Tile";
+import { DEPTHS, TILE_TYPES, CROP_TYPES } from "../constants";
 
 export class MainGame extends Scene {
   constructor() {
@@ -21,15 +22,35 @@ export class MainGame extends Scene {
   }
 
   preload() {
+    // Load the terrain (grass, water, paths) and objects (crops, fences, tools)
+    this.load.spritesheet("terrain", "assets/terrain.png", {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
+    this.load.spritesheet("objects", "assets/objects.png", {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
+
     // Load images: (key, path)
     this.load.image("player", "assets/player.png");
-    this.load.image("dirt", "assets/dirt.png");
-    this.load.image("tilled", "assets/tilled.png");
-    this.load.image("watered", "assets/watered.png"); // Not yet
-    this.load.image("path", "assets/path.png");
   }
 
   create() {
+    // Fill the entire screen with base grass (Frame 13 from terrain)
+    this.add
+      .tileSprite(
+        0,
+        0,
+        this.scale.width,
+        this.scale.height,
+        TILE_TYPES.GRASS.texture,
+        TILE_TYPES.GRASS.frame,
+      )
+      .setOrigin(0)
+      .setTileScale(2)
+      .setDepth(DEPTHS.GRASS);
+
     const cols = 21;
     const rows = 13;
 
@@ -41,19 +62,16 @@ export class MainGame extends Scene {
         const posX = x * this.tileSize + this.offsetX;
         const posY = y * this.tileSize + this.offsetY;
 
-        // Draw the "Outline" for the whole screen area
-        // .setStrokeStyle(thickness, color) makes it an empty box
-        this.add
-          .rectangle(posX, posY, this.tileSize, this.tileSize)
-          .setStrokeStyle(1, 0x333333);
-
         // Logic for the "Plus" Path
         // We find the middle column and middle row
         const isMiddleCol = x === Math.floor(cols / 2);
         const isMiddleRow = y === Math.floor(rows / 2);
-        const type = !isMiddleCol && !isMiddleRow ? "DIRT" : "PATH";
 
-        this.grid[y][x] = new Tile(this, posX, posY, type);
+        const isPath = isMiddleCol || isMiddleRow;
+        const tileType = isPath ? "PATH" : "DIRT";
+        const visualConfig = isPath ? TILE_TYPES.PATH : TILE_TYPES.DIRT;
+
+        this.grid[y][x] = new Tile(this, posX, posY, tileType, visualConfig);
       }
     }
     this.player = new Player(this, 400, 140);
@@ -65,6 +83,15 @@ export class MainGame extends Scene {
   }
 
   update(time, delta) {
+    // Loop through the grid and update any existing crops
+    this.grid.forEach((row) => {
+      row.forEach((tile) => {
+        if (tile.crop) {
+          tile.crop.update(delta, tile.isWatered);
+        }
+      });
+    });
+
     this.player.update(delta);
 
     this.debugDisplay.update(
@@ -94,6 +121,9 @@ export class MainGame extends Scene {
 
       if (!tile.isTilled) {
         tile.till();
+      } else if (!tile.crop) {
+        // If it's tilled but empty, plant a seed
+        tile.plant(CROP_TYPES.WHEAT);
       } else if (!tile.isWatered) {
         tile.water();
       }

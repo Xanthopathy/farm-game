@@ -1,3 +1,9 @@
+Change player icon to a variety of tools
+Add small delay between each action
+Come up with a gaming loop
+Maybe add different layers of water for bucket to indicate water level for well refill
+
+
 Finding high-quality free assets for a game like the one in the video (top-down pixel art) is actually pretty easy if you know where to look.
 
 Since the tutorial uses CC0 (public domain) style assets, here are the best places to find similar free art:

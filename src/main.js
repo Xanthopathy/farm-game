@@ -1,3 +1,4 @@
+// src/main.js
 import * as Phaser from "phaser";
 import { MainGame } from "./scenes/MainGame";
 
@@ -7,6 +8,10 @@ const config = {
   height: 600,
   parent: "game-container",
   pixelArt: true,
+  render: {
+    antiAlias: false,
+    roundPixels: true,
+  },
   scene: [MainGame],
 };
 
