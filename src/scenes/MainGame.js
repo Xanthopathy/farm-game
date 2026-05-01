@@ -2,7 +2,7 @@
 import * as Phaser from "phaser";
 import { Scene } from "phaser";
 import { Player } from "../entities/Player";
-import { getGridCoords } from "../utils/GridMath";
+import { getGridCoords, getPixelCoords } from "../utils/GridMath";
 import { DebugDisplay } from "../utils/Debug";
 import { createStack } from "../utils/SpriteUtils";
 import { Tile } from "../entities/Tile";
@@ -16,9 +16,10 @@ export class MainGame extends Scene {
   init() {
     // Use this for defining variables
     this.grid = []; // Array to store tile data
+    this.decorations = []; // Separate layer for flexible sprite placement
     this.tileSize = 32;
-    this.offsetX = 80;
-    this.offsetY = 176; // Adjusted to align with 32px grid boundaries (176 - 16 = 160)
+    this.offsetX = 0; // Grid (0,0) is now at canvas top-left
+    this.offsetY = 0; // Grid (0,0) is now at canvas top-left
     this.debugDisplay = null;
 
     this.gold = 0;
@@ -63,19 +64,26 @@ export class MainGame extends Scene {
 
     const cols = 21;
     const rows = 13;
+    const gridXOffset = 2;
+    const gridYOffset = 6;
 
     // Building the grid
-    for (let y = 0; y < rows; y++) {
+    for (let y = gridYOffset; y < rows + gridYOffset; y++) {
       this.grid[y] = [];
-      for (let x = 0; x < cols; x++) {
-        // Position = index * size + offset (to center it a bit)
-        const posX = x * this.tileSize + this.offsetX;
-        const posY = y * this.tileSize + this.offsetY;
+      for (let x = gridXOffset; x < cols + gridXOffset; x++) {
+        // Convert grid coordinates to pixel position
+        const { x: posX, y: posY } = getPixelCoords(
+          x,
+          y,
+          this.tileSize,
+          this.offsetX,
+          this.offsetY,
+        );
 
         // Logic for the "Plus" Path
         // We find the middle column and middle row
-        const isMiddleCol = x === Math.floor(cols / 2);
-        const isMiddleRow = y === Math.floor(rows / 2);
+        const isMiddleCol = x === Math.floor(cols / 2 + gridXOffset);
+        const isMiddleRow = y === Math.floor(rows / 2 + gridYOffset);
 
         const isPath = isMiddleCol || isMiddleRow;
         const tileType = isPath ? "PATH" : "DIRT";
@@ -85,21 +93,50 @@ export class MainGame extends Scene {
       }
     }
 
+    // Place bin at grid (5, 1)
+    const binPixels = getPixelCoords(
+      5,
+      1,
+      this.tileSize,
+      this.offsetX,
+      this.offsetY,
+    );
     this.shippingBin = this.add
-      .sprite(200, 50, WORLD_OBJECTS.BIN.texture, WORLD_OBJECTS.BIN.frame)
+      .sprite(
+        binPixels.x,
+        binPixels.y,
+        WORLD_OBJECTS.BIN.texture,
+        WORLD_OBJECTS.BIN.frame,
+      )
       .setScale(2)
       .setDepth(DEPTHS.OBJECTS);
 
+    // Place well at grid (4, 4)
+    const wellPixels = getPixelCoords(
+      4,
+      4,
+      this.tileSize,
+      this.offsetX,
+      this.offsetY,
+    );
     this.well = createStack(
       this,
-      128,
-      136,
+      wellPixels.x,
+      wellPixels.y,
       WORLD_OBJECTS.WELL,
       DEPTHS.OBJECTS,
       DEPTHS.CROP_TOP,
     );
 
-    this.player = new Player(this, 400, 140);
+    // Create player at grid (10, 6)
+    this.player = new Player(
+      this,
+      10,
+      6,
+      this.tileSize,
+      this.offsetX,
+      this.offsetY,
+    );
     this.spaceBar = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE,
     );
@@ -107,6 +144,33 @@ export class MainGame extends Scene {
     this.showDebugGrid = false;
 
     this.debugDisplay = new DebugDisplay(this);
+  }
+
+  /**
+   * Helper method to place decorative sprites at grid coordinates
+   * Perfect for placing objects from the spritesheet without being tied to the grid tile system
+   */
+  placeDecoration(
+    gridX,
+    gridY,
+    texture,
+    frame,
+    scale = 1,
+    depth = DEPTHS.OBJECTS,
+  ) {
+    const { x, y } = getPixelCoords(
+      gridX,
+      gridY,
+      this.tileSize,
+      this.offsetX,
+      this.offsetY,
+    );
+    const sprite = this.add
+      .sprite(x, y, texture, frame)
+      .setScale(scale)
+      .setDepth(depth);
+    this.decorations.push(sprite);
+    return sprite;
   }
 
   update(time, delta) {

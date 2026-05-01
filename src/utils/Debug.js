@@ -1,5 +1,5 @@
 // src/utils/Debug.js
-import { getGridCoords } from "./GridMath";
+import { getGridCoords, getPixelCoords } from "./GridMath";
 
 export class DebugDisplay {
   constructor(scene) {
@@ -54,8 +54,13 @@ export class DebugDisplay {
       this.graphics.lineBetween(1, 0, 1, height); // Left
 
       // Draw dot and tile highlight based on the logical farming grid
-      const dotX = gridX * tileSize + offsetX;
-      const dotY = gridY * tileSize + offsetY;
+      const { x: dotX, y: dotY } = getPixelCoords(
+        gridX,
+        gridY,
+        tileSize,
+        offsetX,
+        offsetY,
+      );
 
       // Highlight the specific tile bounds in red
       this.graphics.lineStyle(1, 0xff0000, 1);

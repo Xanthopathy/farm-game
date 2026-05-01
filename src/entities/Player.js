@@ -1,10 +1,24 @@
 // src/entities/Player.js
 import * as Phaser from "phaser";
 import { DEPTHS } from "../constants";
+import { getPixelCoords } from "../utils/GridMath";
 
 export class Player extends Phaser.GameObjects.Sprite {
-  constructor(scene, x, y) {
+  constructor(scene, gridX, gridY, tileSize, offsetX, offsetY) {
+    // Calculate pixel position from grid coordinates
+    const { x, y } = getPixelCoords(gridX, gridY, tileSize, offsetX, offsetY);
+
     super(scene, x, y, "player");
+
+    this.scene = scene;
+    this.tileSize = tileSize;
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
+
+    // Store grid position
+    this.gridX = gridX;
+    this.gridY = gridY;
+
     this.setScale(1.5);
     scene.add.existing(this);
 
