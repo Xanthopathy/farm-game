@@ -1,4 +1,4 @@
-Change player icon to a variety of tools
+Change player icon to a variety of tools in objects.png
 Add small delay between each action
 Come up with a gaming loop
 Maybe add different layers of water for bucket to indicate water level for well refill

@@ -5,7 +5,7 @@ import { MainGame } from "./scenes/MainGame";
 const config = {
   type: Phaser.AUTO,
   width: 800,
-  height: 600,
+  height: 640,
   parent: "game-container",
   pixelArt: true,
   render: {

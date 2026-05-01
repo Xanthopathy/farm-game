@@ -4,6 +4,7 @@ export const DEPTHS = {
   TILE: 1,
   CROP_BOTTOM: 2,
   CROP_TOP: 3,
+  OBJECTS: 2,
   PLAYER: 10,
 };
 
@@ -34,13 +35,25 @@ export const CROP_TYPES = {
     frames: [
       26, // Stage 0 - bottom only
       27, // Stage 1 - bottom only
-      28, // Stage 2 - bottom only
-      { bottom: 29, top: 12 }, // Stage 3 - bottom + top
-      { bottom: 30, top: 13 }, // Stage 4 - bottom + top
-      { bottom: 31, top: 14 }, // Stage 5 - bottom + top
-      { bottom: 31, top: 15 }, // Stage 6 - bottom + top
+      { bottom: 28, top: 12 }, // Stage 2 - bottom only + top
+      { bottom: 29, top: 13 }, // Stage 3 - bottom + top
+      { bottom: 30, top: 14 }, // Stage 4 - bottom + top
+      { bottom: 31, top: 15 }, // Stage 5 - bottom + top
     ],
     growthTime: 5000,
     sellValue: 20,
   },
+};
+
+export const WORLD_OBJECTS = {
+  WELL: { texture: "tiny_town", frame: { bottom: 104, top: 92 } },
+  BIN: { texture: "objects", frame: 37 },
+};
+
+export const PLAYER_FRAMES = {
+  IDLE: 0,
+  HOE: 1, // Till (tiny_town 116)
+  CAN: 2, // Water (tiny_town 130 empty, 131 full)
+  SEEDS: 3, // Plant (objects 24 corn)
+  SCYTHE: 4, // Harvest (tiny_town 129)
 };
