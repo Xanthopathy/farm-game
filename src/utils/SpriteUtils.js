@@ -12,3 +12,43 @@ export const createStack = (scene, x, y, config, bottomDepth, topDepth) => {
 
   return { bottom, top };
 };
+
+/**
+ * Create a dynamic stacked sprite pair that can change frames
+ * Perfect for crops that grow and need top/bottom sprites
+ */
+export const createDynamicStack = (
+  scene,
+  x,
+  y,
+  texture,
+  bottomDepth,
+  topDepth,
+) => {
+  const bottom = scene.add
+    .sprite(x, y, texture)
+    .setScale(2)
+    .setDepth(bottomDepth);
+
+  let top = null;
+
+  const updateFrames = (bottomFrame, topFrame = null) => {
+    bottom.setFrame(bottomFrame);
+
+    if (topFrame) {
+      if (!top) {
+        top = scene.add
+          .sprite(x, y - 32, texture, topFrame)
+          .setScale(2)
+          .setDepth(topDepth);
+      } else {
+        top.setFrame(topFrame);
+      }
+    } else if (top) {
+      top.destroy();
+      top = null;
+    }
+  };
+
+  return { bottom, top: null, updateFrames };
+};

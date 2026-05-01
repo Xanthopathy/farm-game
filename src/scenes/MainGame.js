@@ -25,6 +25,7 @@ export class MainGame extends Scene {
     this.water = 10;
     this.maxWater = 10;
     this.inventory = [];
+    // TODO: Make UI bar for Gold and tool selection (water is shown as a value bottom right of bucket/can icon)
   }
 
   preload() {
@@ -71,11 +72,7 @@ export class MainGame extends Scene {
       this.grid[y] = [];
       for (let x = gridXOffset; x < cols + gridXOffset; x++) {
         // Convert grid coordinates to pixel position
-        const { x: posX, y: posY } = getPixelCoords(
-          x,
-          y,
-          this.tileSize,
-        );
+        const { x: posX, y: posY } = getPixelCoords(x, y, this.tileSize);
 
         // Logic for the "Plus" Path
         // We find the middle column and middle row
@@ -91,11 +88,7 @@ export class MainGame extends Scene {
     }
 
     // Place bin at grid (5, 1)
-    const binPixels = getPixelCoords(
-      5,
-      1,
-      this.tileSize,
-    );
+    const binPixels = getPixelCoords(5, 1, this.tileSize);
     this.shippingBin = this.add
       .sprite(
         binPixels.x,
@@ -107,11 +100,7 @@ export class MainGame extends Scene {
       .setDepth(DEPTHS.OBJECTS);
 
     // Place well at grid (4, 4)
-    const wellPixels = getPixelCoords(
-      4,
-      4,
-      this.tileSize,
-    );
+    const wellPixels = getPixelCoords(4, 4, this.tileSize);
     this.well = createStack(
       this,
       wellPixels.x,
@@ -122,12 +111,7 @@ export class MainGame extends Scene {
     );
 
     // Create player at grid (10, 6)
-    this.player = new Player(
-      this,
-      10,
-      6,
-      this.tileSize,
-    );
+    this.player = new Player(this, 10, 6, this.tileSize);
     this.spaceBar = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE,
     );
@@ -180,11 +164,7 @@ export class MainGame extends Scene {
 
     this.player.update(delta);
 
-    this.debugDisplay.update(
-      this.player,
-      this.tileSize,
-      this.showDebugGrid,
-    );
+    this.debugDisplay.update(this.player, this.tileSize, this.showDebugGrid);
 
     if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
       this.handleInteraction();

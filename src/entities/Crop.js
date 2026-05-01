@@ -1,24 +1,33 @@
 // src/entities/Crop.js
-import * as Phaser from "phaser";
 import { DEPTHS } from "../constants";
+import { createDynamicStack } from "../utils/SpriteUtils";
 
-export class Crop extends Phaser.GameObjects.Sprite {
+export class Crop {
   constructor(scene, x, y, type) {
-    const frame =
-      typeof type.frames[0] === "number"
-        ? type.frames[0]
-        : type.frames[0].bottom;
-    super(scene, x, y, "objects", frame);
     this.scene = scene;
+    this.x = x;
+    this.y = y;
     this.type = type;
     this.growthStage = 0;
     this.isMature = false;
     this.timer = 0;
-    this.topHalf = null;
 
-    scene.add.existing(this);
-    this.setScale(2);
-    this.setDepth(DEPTHS.CROP_BOTTOM);
+    // Create dynamic stack for bottom/top sprite management
+    this.sprites = createDynamicStack(
+      scene,
+      x,
+      y,
+      "objects",
+      DEPTHS.CROP_BOTTOM,
+      DEPTHS.CROP_TOP,
+    );
+
+    // Initialize with first frame
+    const frame =
+      typeof type.frames[0] === "number"
+        ? type.frames[0]
+        : type.frames[0].bottom;
+    this.sprites.updateFrames(frames);
   }
 
   update(delta, isWatered) {
@@ -42,27 +51,10 @@ export class Crop extends Phaser.GameObjects.Sprite {
     if (nextFrame != undefined) {
       if (typeof nextFrame === "number") {
         // Single frame stage
-        this.setFrame(nextFrame);
-        if (this.topHalf) {
-          this.topHalf.destroy();
-          this.topHalf = null;
-        }
+        this.sprites.updateFrames(nextFrame, null);
       } else {
-        // Composite frame stage (bottom + top)
-        this.setFrame(nextFrame.bottom);
-
-        if (!this.topHalf) {
-          this.topHalf = this.scene.add.sprite(
-            this.x,
-            this.y - 32, // Offset by one tile (16px * 2 scale)
-            "objects",
-            nextFrame.top,
-          );
-          this.topHalf.setScale(2);
-          this.topHalf.setDepth(DEPTHS.CROP_TOP);
-        } else {
-          this.topHalf.setFrame(nextFrame.top);
-        }
+        // Composite frame stage
+        this.sprites.updateFrames(nextFrame.bottom, nextFrame.top);
       }
     }
 
