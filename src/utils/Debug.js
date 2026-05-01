@@ -16,14 +16,8 @@ export class DebugDisplay {
       .setScrollFactor(0); // Ensures it stays fixed to the screen
   }
 
-  update(player, tileSize, offsetX, offsetY, showGrid) {
-    const { gridX, gridY } = getGridCoords(
-      player.x,
-      player.y,
-      tileSize,
-      offsetX,
-      offsetY,
-    );
+  update(player, tileSize, showGrid) {
+    const { gridX, gridY } = getGridCoords(player.x, player.y, tileSize);
 
     this.debugText.setText(
       `Pos: ${Math.floor(player.x)}, ${Math.floor(player.y)}\nGrid: ${gridX}, ${gridY}`,
@@ -54,13 +48,7 @@ export class DebugDisplay {
       this.graphics.lineBetween(1, 0, 1, height); // Left
 
       // Draw dot and tile highlight based on the logical farming grid
-      const { x: dotX, y: dotY } = getPixelCoords(
-        gridX,
-        gridY,
-        tileSize,
-        offsetX,
-        offsetY,
-      );
+      const { x: dotX, y: dotY } = getPixelCoords(gridX, gridY, tileSize);
 
       // Highlight the specific tile bounds in red
       this.graphics.lineStyle(1, 0xff0000, 1);

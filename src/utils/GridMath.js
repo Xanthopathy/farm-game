@@ -2,22 +2,19 @@
 /**
  * Convert pixel coordinates to grid coordinates
  */
-export const getGridCoords = (x, y, tileSize, offsetX, offsetY) => {
-  const relativeX = x - offsetX;
-  const relativeY = y - offsetY;
-
+export const getGridCoords = (x, y, tileSize) => {
   return {
-    gridX: Math.floor(relativeX / tileSize),
-    gridY: Math.floor(relativeY / tileSize),
+    gridX: Math.floor(x / tileSize),
+    gridY: Math.floor(y / tileSize),
   };
 };
 
 /**
  * Convert grid coordinates to pixel coordinates (center of the tile)
  */
-export const getPixelCoords = (gridX, gridY, tileSize, offsetX, offsetY) => {
+export const getPixelCoords = (gridX, gridY, tileSize) => {
   return {
-    x: gridX * tileSize + offsetX + tileSize / 2,
-    y: gridY * tileSize + offsetY + tileSize / 2,
+    x: gridX * tileSize + tileSize / 2,
+    y: gridY * tileSize + tileSize / 2,
   };
 };

@@ -42,3 +42,7 @@ CraftPix (Freebies Section): They have high-quality "Top-down" tilesets (grass, 
 ├── notes/                  # Keep your proj.md and other docs here
 │   └── proj.md
 └── .gitignore
+
+
+If you ever need camera offsets or viewport panning in the future, you'd use Phaser's camera system instead of hardcoding offsets everywhere.
+

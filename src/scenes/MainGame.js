@@ -18,8 +18,7 @@ export class MainGame extends Scene {
     this.grid = []; // Array to store tile data
     this.decorations = []; // Separate layer for flexible sprite placement
     this.tileSize = 32;
-    this.offsetX = 0; // Grid (0,0) is now at canvas top-left
-    this.offsetY = 0; // Grid (0,0) is now at canvas top-left
+
     this.debugDisplay = null;
 
     this.gold = 0;
@@ -76,8 +75,6 @@ export class MainGame extends Scene {
           x,
           y,
           this.tileSize,
-          this.offsetX,
-          this.offsetY,
         );
 
         // Logic for the "Plus" Path
@@ -98,8 +95,6 @@ export class MainGame extends Scene {
       5,
       1,
       this.tileSize,
-      this.offsetX,
-      this.offsetY,
     );
     this.shippingBin = this.add
       .sprite(
@@ -116,8 +111,6 @@ export class MainGame extends Scene {
       4,
       4,
       this.tileSize,
-      this.offsetX,
-      this.offsetY,
     );
     this.well = createStack(
       this,
@@ -134,8 +127,6 @@ export class MainGame extends Scene {
       10,
       6,
       this.tileSize,
-      this.offsetX,
-      this.offsetY,
     );
     this.spaceBar = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE,
@@ -192,8 +183,6 @@ export class MainGame extends Scene {
     this.debugDisplay.update(
       this.player,
       this.tileSize,
-      this.offsetX,
-      this.offsetY,
       this.showDebugGrid,
     );
 
@@ -207,8 +196,6 @@ export class MainGame extends Scene {
       this.player.x,
       this.player.y,
       this.tileSize,
-      this.offsetX,
-      this.offsetY,
     );
 
     // Check if player is within the bounds of our grid array
