@@ -20,6 +20,16 @@ export class Tile {
       .setDepth(DEPTHS.TILE);
   }
 
+  squishFX() {
+    // Add a little "squish" effect
+    this.scene.tweens.add({
+      targets: this.sprite,
+      scale: 2.2,
+      duration: 50,
+      yoyo: true,
+    });
+  }
+
   till() {
     if (this.type === "DIRT" && !this.isTilled) {
       this.isTilled = true;
@@ -27,6 +37,9 @@ export class Tile {
         TILE_TYPES.TILLED.texture,
         TILE_TYPES.TILLED.frame,
       );
+
+      this.squishFX();
+
       console.log("Tile tilled!");
       return true;
     }
@@ -37,22 +50,41 @@ export class Tile {
     if (this.isTilled && !this.isWatered) {
       this.isWatered = true;
       this.sprite.setTint(0x999999); // Darker tint for watered soil
-
-      // Add a little "squish" effect when watering
-      this.scene.tweens.add({
-        targets: this.sprite,
-        scale: 2.2,
-        duration: 50,
-        yoyo: true,
-      });
     }
+
+    this.squishFX();
   }
 
   plant(cropType) {
     if (this.isTilled && !this.crop) {
       this.crop = new Crop(this.scene, this.x, this.y, cropType);
+      this.squishFX();
       return true;
     }
     return false;
+  }
+
+  harvest() {
+    if (this.crop && this.crop.isMature) {
+      const cropName = this.crop.type.name;
+      const sellValue = this.crop.type.sellValue;
+
+      // Destroy crop sprites
+      this.crop.sprites.bottom.destroy();
+      if (this.crop.sprites.top) {
+        this.crop.sprites.top.destroy();
+      }
+      this.crop = null;
+
+      // Reset tile state (back to tilled)
+      this.isWatered = false;
+      this.sprite.clearTint();
+
+      this.squishFX();
+
+      console.log(`Harvested ${cropName}!`);
+      return { cropName, sellValue };
+    }
+    return null;
   }
 }

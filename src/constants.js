@@ -4,7 +4,7 @@ export const DEPTHS = {
   TILE: 1,
   CROP_BOTTOM: 2,
   CROP_TOP: 3,
-  OBJECTS: 2,
+  OBJECTS: 4,
   PLAYER: 10,
 };
 
@@ -33,7 +33,7 @@ export const CROP_TYPES = {
   CORN: {
     name: "Corn",
     frames: [
-      26, // Stage 0 - bottom only
+      26, // Stage 0 (Seed) - bottom only
       27, // Stage 1 - bottom only
       { bottom: 28, top: 12 }, // Stage 2 - bottom only + top
       { bottom: 29, top: 13 }, // Stage 3 - bottom + top
@@ -50,10 +50,10 @@ export const WORLD_OBJECTS = {
   BIN: { texture: "objects", frame: 37 },
 };
 
-export const PLAYER_FRAMES = {
-  IDLE: 0,
+export const TOOLS = {
+  NONE: 0,
   HOE: 1, // Till (tiny_town 116)
-  CAN: 2, // Water (tiny_town 130 empty, 131 full)
+  BUCKET: 2, // Water (tiny_town 130 empty, 131 full)
   SEEDS: 3, // Plant (objects 24 corn)
   SCYTHE: 4, // Harvest (tiny_town 129)
 };

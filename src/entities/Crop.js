@@ -1,5 +1,5 @@
 // src/entities/Crop.js
-import { DEPTHS } from "../constants";
+import { DEPTHS, CROP_TYPES } from "../constants";
 import { createDynamicStack } from "../utils/SpriteUtils";
 
 export class Crop {
@@ -27,7 +27,7 @@ export class Crop {
       typeof type.frames[0] === "number"
         ? type.frames[0]
         : type.frames[0].bottom;
-    this.sprites.updateFrames(frames);
+    this.sprites.updateFrames(frame);
   }
 
   update(delta, isWatered) {

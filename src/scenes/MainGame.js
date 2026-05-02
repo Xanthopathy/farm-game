@@ -6,7 +6,13 @@ import { getGridCoords, getPixelCoords } from "../utils/GridMath";
 import { DebugDisplay } from "../utils/Debug";
 import { createStack } from "../utils/SpriteUtils";
 import { Tile } from "../entities/Tile";
-import { DEPTHS, TILE_TYPES, CROP_TYPES, WORLD_OBJECTS } from "../constants";
+import {
+  DEPTHS,
+  TILE_TYPES,
+  CROP_TYPES,
+  WORLD_OBJECTS,
+  TOOLS,
+} from "../constants";
 
 export class MainGame extends Scene {
   constructor() {
@@ -111,12 +117,11 @@ export class MainGame extends Scene {
     );
 
     // Create player at grid (10, 6)
+    const KeyCodes = Phaser.Input.Keyboard.KeyCodes;
     this.player = new Player(this, 10, 6, this.tileSize);
-    this.spaceBar = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE,
-    );
-    this.gKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
-    this.bKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+    this.spaceBar = this.input.keyboard.addKey(KeyCodes.SPACE);
+    this.gKey = this.input.keyboard.addKey(KeyCodes.G);
+    this.bKey = this.input.keyboard.addKey(KeyCodes.B);
     this.showDebugGrid = false;
     this.showDebugText = false;
 
@@ -183,24 +188,88 @@ export class MainGame extends Scene {
   }
 
   handleInteraction() {
+    if (this.player.isBusy) return;
+
     const { gridX, gridY } = getGridCoords(
       this.player.x,
       this.player.y,
       this.tileSize,
     );
-
     // Check if player is within the bounds of our grid array
-    if (this.grid[gridY] && this.grid[gridY][gridX]) {
-      const tile = this.grid[gridY][gridX];
+    const tile =
+      this.grid[gridY] && this.grid[gridY][gridX]
+        ? this.grid[gridY][gridX]
+        : null;
+    const tool = this.player.currentTool;
 
-      if (!tile.isTilled) {
-        tile.till();
-      } else if (!tile.crop) {
-        // If it's tilled but empty, plant a seed
-        tile.plant(CROP_TYPES.CORN);
-      } else if (!tile.isWatered) {
-        tile.water();
-      }
+    // Static object interaction (check regardless of tool)
+    // Well (9, 4)
+    if (gridX === 9 && gridY === 4) {
+      this.player.performAction(500, () => {
+        this.water = this.maxWater;
+        console.log(`Water refilled: ${this.water}/${this.maxWater}`);
+      });
+      return;
     }
+
+    // Shipping Bin (15, 4 with a top half)
+    if (gridX === 15 && (gridY === 3 || gridY === 4)) {
+      if (this.inventory.length > 0) {
+        this.player.performAction(300, () => this.sellCrops());
+      } else {
+        console.log("Inventory empty!");
+      }
+      return;
+    }
+
+    // Tile-based interaction
+    if (!tile) return;
+
+    this.player.performAction(250, () => {
+      switch (tool) {
+        case TOOLS.HOE:
+          tile.till();
+          break;
+
+        case TOOLS.SEEDS:
+          tile.plant(CROP_TYPES.CORN);
+          break;
+
+        case TOOLS.BUCKET:
+          if (this.water > 0) {
+            if (tile.isTilled && !tile.isWatered) {
+              tile.water();
+              this.water--;
+              console.log(`Water left: ${this.water}`);
+            }
+          } else {
+            console.log("Out of water! Refill at the well!");
+          }
+          break;
+
+        case TOOLS.SCYTHE:
+          const harvested = tile.harvest();
+          if (harvested) {
+            this.inventory.push(harvested);
+            console.log(`Stored ${harvested.name} in inventory`);
+          }
+          break;
+
+        default:
+          console.log("No tool equipped!");
+          break;
+      }
+    });
+  }
+
+  sellCrops() {
+    let totalGain = 0;
+    this.inventory.forEach((item) => {
+      totalGain += item.sellValue;
+    });
+
+    this.gold += totalGain;
+    this.inventory = []; // Clear inventory
+    console.log(`Sold shipment for ${totalGain}g! Total Gold: ${this.gold}`);
   }
 }
