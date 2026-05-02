@@ -5,8 +5,12 @@
 |-- public
 |   `-- assets
 |       |-- objects.png
+|       |-- player
+|       |   |-- Idle.png
+|       |   `-- Walk.png
 |       |-- player.png
-|       `-- terrain.png
+|       |-- terrain.png
+|       `-- tiny_town.png
 `-- src
     |-- constants.js
     |-- entities
@@ -19,6 +23,7 @@
     |-- style.css
     `-- utils
         |-- Debug.js
-        `-- GridMath.js
+        |-- GridMath.js
+        `-- SpriteUtils.js
 
-6 directories, 15 files
+7 directories, 19 files

@@ -13,17 +13,22 @@ export class DebugDisplay {
         padding: { x: 5, y: 5 },
       })
       .setOrigin(1, 0)
-      .setScrollFactor(0); // Ensures it stays fixed to the screen
+      .setScrollFactor(0) // Ensures it stays fixed to the screen
+      .setVisible(false);
   }
 
-  update(player, tileSize, showGrid) {
+  update(player, tileSize, showGrid, showText) {
     const { gridX, gridY } = getGridCoords(player.x, player.y, tileSize);
 
-    this.debugText.setText(
-      `Pos: ${Math.floor(player.x)}, ${Math.floor(player.y)}\nGrid: ${gridX}, ${gridY}`,
-    );
-
     this.graphics.clear();
+
+    this.debugText.setVisible(showText);
+
+    if (showText) {
+      this.debugText.setText(
+        `Pos: ${Math.floor(player.x)}, ${Math.floor(player.y)}\nGrid: ${gridX}, ${gridY}`,
+      );
+    }
 
     if (showGrid) {
       // Draw 32x32 global grid starting from 0,0

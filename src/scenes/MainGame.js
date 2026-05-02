@@ -87,8 +87,8 @@ export class MainGame extends Scene {
       }
     }
 
-    // Place bin at grid (5, 1)
-    const binPixels = getPixelCoords(5, 1, this.tileSize);
+    // Place bin at grid (15, 4)
+    const binPixels = getPixelCoords(15, 4, this.tileSize);
     this.shippingBin = this.add
       .sprite(
         binPixels.x,
@@ -99,8 +99,8 @@ export class MainGame extends Scene {
       .setScale(2)
       .setDepth(DEPTHS.OBJECTS);
 
-    // Place well at grid (4, 4)
-    const wellPixels = getPixelCoords(4, 4, this.tileSize);
+    // Place well at grid (9, 4)
+    const wellPixels = getPixelCoords(9, 4, this.tileSize);
     this.well = createStack(
       this,
       wellPixels.x,
@@ -116,7 +116,9 @@ export class MainGame extends Scene {
       Phaser.Input.Keyboard.KeyCodes.SPACE,
     );
     this.gKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
+    this.bKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
     this.showDebugGrid = false;
+    this.showDebugText = false;
 
     this.debugDisplay = new DebugDisplay(this);
   }
@@ -162,9 +164,18 @@ export class MainGame extends Scene {
       this.showDebugGrid = !this.showDebugGrid;
     }
 
+    if (Phaser.Input.Keyboard.JustDown(this.bKey)) {
+      this.showDebugText = !this.showDebugText;
+    }
+
     this.player.update(delta);
 
-    this.debugDisplay.update(this.player, this.tileSize, this.showDebugGrid);
+    this.debugDisplay.update(
+      this.player,
+      this.tileSize,
+      this.showDebugGrid,
+      this.showDebugText,
+    );
 
     if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
       this.handleInteraction();
