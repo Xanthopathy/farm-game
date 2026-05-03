@@ -4,6 +4,7 @@ import { Scene } from "phaser";
 import { Player } from "../entities/Player";
 import { getGridCoords, getPixelCoords } from "../utils/GridMath";
 import { DebugDisplay } from "../utils/Debug";
+import { UIDisplay } from "../utils/UIDisplay";
 import { createStack } from "../utils/SpriteUtils";
 import { Tile } from "../entities/Tile";
 import {
@@ -26,6 +27,7 @@ export class MainGame extends Scene {
     this.tileSize = 32;
 
     this.debugDisplay = null;
+    this.uiDisplay = null;
 
     this.gold = 0;
     this.water = 10;
@@ -126,6 +128,7 @@ export class MainGame extends Scene {
     this.showDebugText = false;
 
     this.debugDisplay = new DebugDisplay(this);
+    this.uiDisplay = new UIDisplay(this);
   }
 
   /**
@@ -182,6 +185,8 @@ export class MainGame extends Scene {
       this.showDebugText,
     );
 
+    this.uiDisplay.update(this.player, this);
+
     if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
       this.handleInteraction();
     }
@@ -203,8 +208,8 @@ export class MainGame extends Scene {
     const tool = this.player.currentTool;
 
     // Static object interaction (check regardless of tool)
-    // Well (9, 4)
-    if (gridX === 9 && gridY === 4) {
+    // Well (9, 4 with a top half)
+    if (gridX === 9 && (gridY === 3 || gridY === 4)) {
       this.player.performAction(500, () => {
         this.water = this.maxWater;
         console.log(`Water refilled: ${this.water}/${this.maxWater}`);
@@ -212,8 +217,8 @@ export class MainGame extends Scene {
       return;
     }
 
-    // Shipping Bin (15, 4 with a top half)
-    if (gridX === 15 && (gridY === 3 || gridY === 4)) {
+    // Shipping Bin (15, 4)
+    if (gridX === 15 && gridY === 4) {
       if (this.inventory.length > 0) {
         this.player.performAction(300, () => this.sellCrops());
       } else {
@@ -251,7 +256,7 @@ export class MainGame extends Scene {
           const harvested = tile.harvest();
           if (harvested) {
             this.inventory.push(harvested);
-            console.log(`Stored ${harvested.name} in inventory`);
+            console.log(`Stored ${harvested.cropName} in inventory`);
           }
           break;
 

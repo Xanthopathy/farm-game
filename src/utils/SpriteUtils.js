@@ -32,23 +32,29 @@ export const createDynamicStack = (
 
   let top = null;
 
-  const updateFrames = (bottomFrame, topFrame = null) => {
-    bottom.setFrame(bottomFrame);
+  const stack = {
+    bottom,
+    get top() {
+      return top;
+    },
+    updateFrames(bottomFrame, topFrame = null) {
+      bottom.setFrame(bottomFrame);
 
-    if (topFrame) {
-      if (!top) {
-        top = scene.add
-          .sprite(x, y - 32, texture, topFrame)
-          .setScale(2)
-          .setDepth(topDepth);
-      } else {
-        top.setFrame(topFrame);
+      if (topFrame) {
+        if (!top) {
+          top = scene.add
+            .sprite(x, y - 32, texture, topFrame)
+            .setScale(2)
+            .setDepth(topDepth);
+        } else {
+          top.setFrame(topFrame);
+        }
+      } else if (top) {
+        top.destroy();
+        top = null;
       }
-    } else if (top) {
-      top.destroy();
-      top = null;
-    }
+    },
   };
 
-  return { bottom, top: null, updateFrames };
+  return stack;
 };
