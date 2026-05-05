@@ -51,9 +51,9 @@ export const WORLD_OBJECTS = {
 };
 
 export const TOOLS = {
-  NONE: 0,
-  HOE: 1, // Till (tiny_town 116)
-  BUCKET: 2, // Water (tiny_town 130 empty, 131 full)
-  SEEDS: 3, // Plant (objects 24 corn)
-  SCYTHE: 4, // Harvest (tiny_town 129)
+  NONE: { id: 0, label: "None" },
+  HOE: { id: 1, label: "Hoe", texture: "tiny_town", frame: 116 },
+  BUCKET: { id: 2, label: "Bucket", texture: "tiny_town", frame: 131 },
+  SEEDS: { id: 3, label: "Seeds", texture: "objects", frame: 24 },
+  SCYTHE: { id: 4, label: "Scythe", texture: "tiny_town", frame: 129 },
 };

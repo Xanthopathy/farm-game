@@ -18,7 +18,7 @@ export class UIDisplay {
   }
 
   update(player, game) {
-    const toolName = this.getToolName(player.currentTool);
+    const toolName = player.currentTool.label;
     const goldCount = game.gold;
     const waterCount = game.water;
     const inventoryCount = game.inventory.length;
@@ -26,22 +26,5 @@ export class UIDisplay {
     this.uiText.setText(
       `Tool: ${toolName}\nGold: ${goldCount}\nWater: ${waterCount}/${game.maxWater}\nHarvest: ${inventoryCount}`,
     );
-  }
-
-  getToolName(tool) {
-    switch (tool) {
-      case TOOLS.NONE:
-        return "None";
-      case TOOLS.HOE:
-        return "Hoe";
-      case TOOLS.BUCKET:
-        return "Bucket";
-      case TOOLS.SEEDS:
-        return "Seeds";
-      case TOOLS.SCYTHE:
-        return "Scythe";
-      default:
-        return "Unknown";
-    }
   }
 }

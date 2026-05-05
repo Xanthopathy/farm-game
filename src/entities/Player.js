@@ -38,6 +38,18 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     this.currentTool = TOOLS.NONE;
     this.isBusy = false; // Action delay
+
+    // Visual indicator for tools during action
+    this.toolVisual = scene.add.sprite(
+      this.x,
+      this.y,
+      TOOLS.HOE.texture,
+      TOOLS.HOE.frame,
+    );
+    this.toolVisual.setScale(1.5);
+    this.toolVisual.setDepth(DEPTHS.PLAYER + 1);
+    this.toolVisual.setVisible(false);
+    this.toolVisual.setOrigin(0.5, 1); // Set origin to bottom for a "swing" effect
   }
 
   update(delta) {
@@ -46,14 +58,43 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   performAction(duration, callback) {
+    const tool = this.currentTool;
+    if (!tool.texture) {
+      // If no tool is equipped, we still want the delay/callback but no visual
+      this.isBusy = true;
+      this.scene.time.delayedCall(duration, () => {
+        this.isBusy = false;
+        callback();
+      });
+      return;
+    }
+
     this.isBusy = true;
+
+    // Position and show the tool
+    this.toolVisual.setTexture(tool.texture, tool.frame);
+    this.toolVisual.setPosition(this.x + 8, this.y);
+    this.toolVisual.setVisible(true);
+    this.toolVisual.setAngle(-45);
+
+    // Swing animation
+    this.scene.tweens.add({
+      targets: this.toolVisual,
+      angle: 45,
+      duration: duration,
+      ease: "Cubic.out",
+    });
+
     this.scene.time.delayedCall(duration, () => {
       this.isBusy = false;
+      this.toolVisual.setVisible(false);
       callback();
     });
   }
 
   handleMovement(delta) {
+    if (this.isBusy) return;
+
     const moveDistance = this.speed * (delta / 1000); // Use delta for smooth movement
     let moveX = 0;
     let moveY = 0;
