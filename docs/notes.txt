@@ -3,20 +3,12 @@ Add small delay between each action
 Come up with a gaming loop
 Maybe add different layers of water for bucket to indicate water level for well refill
 
+Have the targeted tile (not the coords the player is exactly on) to be shifted by 1 tile in whatever direction it's facing
 
-Finding high-quality free assets for a game like the one in the video (top-down pixel art) is actually pretty easy if you know where to look.
-
-Since the tutorial uses CC0 (public domain) style assets, here are the best places to find similar free art:
-
-Top Recommendations
 Kenney.nl: Often called the "Gold Standard" of free assets. Everything is CC0, meaning you can use it for anything without even giving credit. Look for his "Pixel" or "RPG" packs.
-
 Itch.io (Free Assets): This is a goldmine. Thousands of indie artists post free packs here. You can filter specifically for "Top-down" and "Pixel Art."
-
 OpenGameArt.org: An older but massive community-driven site. You can find everything from character sprite sheets to environment tilesets.
-
 CraftPix (Freebies Section): They have high-quality "Top-down" tilesets (grass, paths, towns) that would work perfectly for a Firebase multiplayer map.
-
 
 .
 ├── assets/                 # Raw and processed game assets
@@ -43,6 +35,4 @@ CraftPix (Freebies Section): They have high-quality "Top-down" tilesets (grass, 
 │   └── proj.md
 └── .gitignore
 
-
 If you ever need camera offsets or viewport panning in the future, you'd use Phaser's camera system instead of hardcoding offsets everywhere.
-

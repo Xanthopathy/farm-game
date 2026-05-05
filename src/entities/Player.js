@@ -7,16 +7,18 @@ export class Player extends Phaser.GameObjects.Sprite {
   constructor(scene, gridX, gridY, tileSize) {
     // Calculate pixel position from grid coordinates
     const { x, y } = getPixelCoords(gridX, gridY, tileSize);
-    super(scene, x, y, "player");
+    super(scene, x, y, "player_idle", 0);
 
     this.scene = scene;
     scene.add.existing(this);
+    this.createAnimations();
+    this.facing = "down";
 
     this.tileSize = tileSize;
     this.gridX = gridX;
     this.gridY = gridY;
 
-    this.setScale(1.5);
+    this.setScale(2);
     this.setOrigin(0.5, 0.75);
     this.setDepth(DEPTHS.PLAYER);
     this.speed = 180;
@@ -52,6 +54,44 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.toolVisual.setOrigin(0.5, 1); // Set origin to bottom for a "swing" effect
   }
 
+  createAnimations() {
+    const anims = this.scene.anims;
+    if (anims.exists("idle-down")) return;
+
+    const configs = [
+      { key: "idle-down", sheet: "player_idle", start: 0, end: 3, repeat: -1 },
+      { key: "idle-up", sheet: "player_idle", start: 4, end: 7, repeat: -1 },
+      {
+        key: "idle-right",
+        sheet: "player_idle",
+        start: 8,
+        end: 11,
+        repeat: -1,
+      },
+      { key: "walk-down", sheet: "player_walk", start: 0, end: 5, repeat: -1 },
+      { key: "walk-up", sheet: "player_walk", start: 6, end: 11, repeat: -1 },
+      {
+        key: "walk-right",
+        sheet: "player_walk",
+        start: 12,
+        end: 17,
+        repeat: -1,
+      },
+    ];
+
+    configs.forEach((cfg) => {
+      anims.create({
+        key: cfg.key,
+        frames: anims.generateFrameNumbers(cfg.sheet, {
+          start: cfg.start,
+          end: cfg.end,
+        }),
+        frameRate: cfg.sheet === "player_idle" ? 4 : 6,
+        repeat: cfg.repeat,
+      });
+    });
+  }
+
   update(delta) {
     this.handleMovement(delta);
     this.handleToolSelection();
@@ -72,8 +112,15 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.isBusy = true;
 
     // Position and show the tool
+    let ox = 0,
+      oy = 0;
+    if (this.facing === "right") ox = 12;
+    else if (this.facing === "left") ox = -12;
+    else if (this.facing === "up") oy = -8;
+    else oy = 8;
+
     this.toolVisual.setTexture(tool.texture, tool.frame);
-    this.toolVisual.setPosition(this.x + 8, this.y);
+    this.toolVisual.setPosition(this.x + ox, this.y + oy);
     this.toolVisual.setVisible(true);
     this.toolVisual.setAngle(-45);
 
@@ -99,17 +146,36 @@ export class Player extends Phaser.GameObjects.Sprite {
     let moveX = 0;
     let moveY = 0;
 
-    // WASD
-    if (this.cursors.left.isDown) moveX -= 1;
-    else if (this.cursors.right.isDown) moveX += 1;
+    if (this.cursors.left.isDown) {
+      moveX = -1;
+      this.facing = "left";
+    } else if (this.cursors.right.isDown) {
+      moveX = 1;
+      this.facing = "right";
+    }
 
-    if (this.cursors.up.isDown) moveY -= 1;
-    else if (this.cursors.down.isDown) moveY += 1;
+    if (this.cursors.up.isDown) {
+      moveY = -1;
+      if (moveX === 0) this.facing = "up";
+    } else if (this.cursors.down.isDown) {
+      moveY = 1;
+      if (moveX === 0) this.facing = "down";
+    }
 
     // Normalize diagonal movement (prevents moving faster diagonally)
     if (moveX !== 0 && moveY !== 0) {
       moveX *= Math.SQRT1_2;
       moveY *= Math.SQRT1_2;
+    }
+
+    // Animation Logic
+    const animDir = this.facing === "left" ? "right" : this.facing;
+    this.setFlipX(this.facing === "left");
+
+    if (moveX !== 0 || moveY !== 0) {
+      this.play(`walk-${animDir}`, true);
+    } else {
+      this.play(`idle-${animDir}`, true);
     }
 
     this.x += moveX * moveDistance;

@@ -37,7 +37,6 @@ export class MainGame extends Scene {
   }
 
   preload() {
-    // Load the terrain (grass, water, paths) and objects (crops, fences, tools)
     this.load.spritesheet("terrain", "assets/terrain.png", {
       frameWidth: 16,
       frameHeight: 16,
@@ -51,8 +50,14 @@ export class MainGame extends Scene {
       frameHeight: 16,
     });
 
-    // Load images: (key, path)
-    this.load.image("player", "assets/player.png");
+    this.load.spritesheet("player_idle", "assets/player/idle.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet("player_walk", "assets/player/walk.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
   }
 
   create() {
@@ -122,6 +127,7 @@ export class MainGame extends Scene {
     const KeyCodes = Phaser.Input.Keyboard.KeyCodes;
     this.player = new Player(this, 10, 6, this.tileSize);
     this.spaceBar = this.input.keyboard.addKey(KeyCodes.SPACE);
+    this.shift = this.input.keyboard.addKey(KeyCodes.SHIFT);
     this.gKey = this.input.keyboard.addKey(KeyCodes.G);
     this.bKey = this.input.keyboard.addKey(KeyCodes.B);
     this.showDebugGrid = false;
@@ -174,6 +180,10 @@ export class MainGame extends Scene {
 
     if (Phaser.Input.Keyboard.JustDown(this.bKey)) {
       this.showDebugText = !this.showDebugText;
+    }
+
+    if (this.shift.isDown) {
+      this.player.speed = 60;
     }
 
     this.player.update(delta);
