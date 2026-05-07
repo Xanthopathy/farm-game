@@ -33,6 +33,11 @@ export class MainGame extends Scene {
     this.water = 10;
     this.maxWater = 10;
     this.inventory = [];
+
+    this.day = 1;
+    this.dayTime = 60000;
+    this.dayTimer = 0;
+    this.isDayActive = true;
     // TODO: Make UI bar for Gold and tool selection (water is shown as a value bottom right of bucket/can icon)
   }
 
@@ -123,7 +128,6 @@ export class MainGame extends Scene {
       DEPTHS.CROP_TOP,
     );
 
-    // Create player at grid (10, 6)
     const KeyCodes = Phaser.Input.Keyboard.KeyCodes;
     this.player = new Player(this, 10, 6, this.tileSize);
     this.spaceBar = this.input.keyboard.addKey(KeyCodes.SPACE);
@@ -205,6 +209,35 @@ export class MainGame extends Scene {
     if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
       this.handleInteraction();
     }
+
+    if (this.isDayActive) {
+      this.dayTimer += delta;
+      if (this.dayTimer >= this.dayTime) {
+        this.endDay();
+      }
+    }
+  }
+
+  endDay() {
+    // Not meant to be final result as we want harvest & selling to be in the day and endDay to check if you met quota
+    this.isDayActive = false;
+    // Auto-harvest all ripe crops
+    this.grid.forEach((row) => {
+      row.forEach((tile) => {
+        if (tile.crop && tile.crop.isRipe()) {
+          const harvested = tile.harvest();
+          if (harvested) this.inventory.push(harvested);
+        }
+      });
+    });
+    // Sell inventory
+    this.sellCrops();
+    // Reset for next day
+    this.day++;
+    this.dayTimer = 0;
+    this.water = this.maxWater;
+    this.isDayActive = true;
+    console.log(`Day ${this.day} started!`);
   }
 
   calculateTargetCoordinates() {

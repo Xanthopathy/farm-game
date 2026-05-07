@@ -22,9 +22,10 @@ export class UIDisplay {
     const goldCount = game.gold;
     const waterCount = game.water;
     const inventoryCount = game.inventory.length;
+    const dayInfo = `Day: ${game.day} | Time: ${Math.ceil((game.dayTime - game.dayTimer) / 1000)}s`;
 
     this.uiText.setText(
-      `Tool: ${toolName}\nGold: ${goldCount}\nWater: ${waterCount}/${game.maxWater}\nHarvest: ${inventoryCount}`,
+      `${dayInfo}\nTool: ${toolName}\nGold: ${goldCount}\nWater: ${waterCount}/${game.maxWater}\nHarvest: ${inventoryCount}`,
     );
   }
 }
