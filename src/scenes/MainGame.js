@@ -74,7 +74,7 @@ export class MainGame extends Scene {
         this.scale.width,
         this.scale.height,
         TILE_TYPES.GRASS.texture,
-        TILE_TYPES.GRASS.frame,
+        TILE_TYPES.GRASS.frames.default,
       )
       .setOrigin(0)
       .setTileScale(2)
@@ -112,7 +112,7 @@ export class MainGame extends Scene {
         binPixels.x,
         binPixels.y,
         WORLD_OBJECTS.BIN.texture,
-        WORLD_OBJECTS.BIN.frame,
+        WORLD_OBJECTS.BIN.frames.default,
       )
       .setScale(2)
       .setDepth(DEPTHS.OBJECTS);
@@ -279,6 +279,10 @@ export class MainGame extends Scene {
     const targetY = this.targetY;
     const tool = this.player.currentTool;
     const duration = tool === TOOLS.NONE ? 0 : 250;
+    let frame = tool.frames.default;
+    if (tool === TOOLS.BUCKET && this.water === 0) {
+      frame = tool.frames.empty;
+    }
 
     // Check if target is within the bounds of our grid array
     // const tile =
@@ -290,7 +294,7 @@ export class MainGame extends Scene {
     this.player.performAction(duration, () => {
       this.handleObjectInteraction(targetX, targetY, tool) ||
         this.handleTileInteraction(tile, tool);
-    });
+    }, frame);
   }
 
   handleObjectInteraction(targetX, targetY, tool) {

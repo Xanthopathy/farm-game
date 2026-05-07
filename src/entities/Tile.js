@@ -15,7 +15,7 @@ export class Tile {
 
     // Create the visual representation
     this.sprite = scene.add
-      .sprite(x, y, visualConfig.texture, visualConfig.frame)
+      .sprite(x, y, visualConfig.texture, visualConfig.frames.default)
       .setScale(2)
       .setDepth(DEPTHS.TILE);
   }
@@ -35,7 +35,7 @@ export class Tile {
       this.isTilled = true;
       this.sprite.setTexture(
         TILE_TYPES.TILLED.texture,
-        TILE_TYPES.TILLED.frame,
+        TILE_TYPES.TILLED.frames.default,
       );
 
       this.squishFX();

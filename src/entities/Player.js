@@ -46,7 +46,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.x,
       this.y,
       TOOLS.HOE.texture,
-      TOOLS.HOE.frame,
+      TOOLS.HOE.frames.default,
     );
     this.toolVisual.setScale(1.5);
     this.toolVisual.setDepth(DEPTHS.PLAYER + 1);
@@ -97,7 +97,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.handleToolSelection();
   }
 
-  performAction(duration, callback) {
+  performAction(duration, callback, frame = this.currentTool.frames.default) {
     const tool = this.currentTool;
     if (!tool.texture) {
       // If no tool is equipped, we still want the delay/callback but no visual
@@ -120,7 +120,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     else if (this.facing === "up") oy = -8;
     else oy = 8;
 
-    this.toolVisual.setTexture(tool.texture, tool.frame);
+    this.toolVisual.setTexture(tool.texture, frame);
     this.toolVisual.setPosition(this.x + ox, this.y + oy);
     this.toolVisual.setFlipX(isLeft);
     this.toolVisual.setVisible(true);

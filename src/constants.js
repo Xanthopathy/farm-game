@@ -9,10 +9,10 @@ export const DEPTHS = {
 };
 
 export const TILE_TYPES = {
-  GRASS: { texture: "terrain", frame: 13 },
-  DIRT: { texture: "terrain", frame: 45 },
-  TILLED: { texture: "terrain", frame: 92 },
-  PATH: { texture: "objects", frame: 21 },
+  GRASS: { texture: "terrain", frames: { default: 13 } },
+  DIRT: { texture: "terrain", frames: { default: 45 } },
+  TILLED: { texture: "terrain", frames: { default: 92 } },
+  PATH: { texture: "objects", frames: { default: 21 } },
 };
 
 export const CROP_TYPES = {
@@ -46,14 +46,14 @@ export const CROP_TYPES = {
 };
 
 export const WORLD_OBJECTS = {
-  WELL: { texture: "tiny_town", frame: { bottom: 104, top: 92 } },
-  BIN: { texture: "objects", frame: 37 },
+  WELL: { texture: "tiny_town", frames: { bottom: 104, top: 92 } },
+  BIN: { texture: "objects", frames: { default: 37 } },
 };
 
 export const TOOLS = {
   NONE: { id: 0, label: "None" },
-  HOE: { id: 1, label: "Hoe", texture: "tiny_town", frame: 116 },
-  BUCKET: { id: 2, label: "Bucket", texture: "tiny_town", frame: 131 },
-  SEEDS: { id: 3, label: "Seeds", texture: "objects", frame: 24 },
-  SCYTHE: { id: 4, label: "Scythe", texture: "tiny_town", frame: 129 },
+  HOE: { id: 1, label: "Hoe", texture: "tiny_town", frames: { default: 116 } },
+  BUCKET: { id: 2, label: "Bucket", texture: "tiny_town", frames: { default: 131, empty: 130 } },
+  SEEDS: { id: 3, label: "Seeds", texture: "objects", frames: { default: 24 } },
+  SCYTHE: { id: 4, label: "Scythe", texture: "tiny_town", frames: { default: 129 } },
 };
