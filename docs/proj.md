@@ -1,55 +1,35 @@
-# PROJECT: 5-DAY FARMING SPRINT (JS/PHASER)
+# PROJECT: Farm Game (Phaser/JS)
 
 ## CORE CONCEPT
 
-A top-down 2D farming game focused on a grid-based growth cycle. The player uses WASD to move and interacts with tiles to till, plant, water, and harvest crops.
+Top-down farming sim: Move, till, plant, water, harvest crops. Sell at bin, refill water at well. Now adding day-based progression.
 
-## TECHNICAL SPECIFICATIONS
+## CURRENT STATUS
 
-Environment: Web browser (HTML5/JavaScript)
+- Movement + facing-based interactions
+- Tile states (dirt, tilled, watered)
+- Crop growth stages + harvesting
+- Well refill, shipping bin, inventory
+- Basic UI text (gold, water, tool)
+- Debug grid overlay
 
-Engine: Phaser 4 (Arcade Physics)
+## GAME LOOP (NEW FOCUS)
 
-Deployment: GitHub Pages (Static hosting)
+- Day timer: 60s active play, then end-of-day harvest/shipping
+- Progression: Track days, gold accumulation
+- Goals: Daily crop targets, gold milestones
+- Polish: Better UI feedback, crop visuals
 
-Art Style: 16x16 or 32x32 pixel art
+## NEXT PRIORITIES
 
-Perspective: Top-down (no gravity)
+1. Implement day timer + end-of-day logic
+2. Add automatic crop harvesting at day end
+3. Improve UI (on-screen prompts, tool icons)
+4. Add simple win conditions (e.g., reach 500g)
 
-## GRID SYSTEM LOGIC
+## LATER IDEAS
 
-The world is a 2D array of tile objects.
-
-Each tile tracks its own state: Type (grass, tilled, watered), Crop (none, carrot, wheat), and Growth (0-100).
-
-Player coordinates are mapped to grid indices using Math.floor(pos / tileSize).
-
-## GAMEPLAY MECHANICS
-
-WASD Movement: Free-roaming movement with 0 gravity.
-
-Tilling: Change grass tiles to dirt via interaction key.
-
-Planting/Watering: Add crops to tiles; crops only progress when soil is watered.
-
-Growth Loop: A timer or "tick" system that updates crop states every second.
-
-Harvesting: Collecting ripe crops to increase a score/inventory.
-
-## PLANNED FEATURES (5-DAY TARGET)
-
-Day 1: Movement, canvas setup, and visual grid rendering.
-
-Day 2: State machine for tiles (Tilled/Planted/Watered logic).
-
-Day 3: Growth timer logic and multiple growth stages for sprites.
-
-Day 4: Game loop elements (Shipping bin for gold, water well refill, or crow pests).
-
-Day 5: UI (Gold/Water counters), polish, and GitHub deployment.
-
-## ASSET PLAN
-
-Use free 16x16 asset packs or AI-generated sprite sheets.
-
-Rendering must use "pixelated" scaling to maintain crisp edges.
+- Seasons affecting growth rates
+- Pest events
+- Multiple crop types
+- Save/load progress

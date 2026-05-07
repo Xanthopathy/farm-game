@@ -1,36 +1,17 @@
 [DONE] Add small delay between each action
 [DONE] Have the targeted tile (not the coords the player is exactly on) to be shifted by 1 tile in whatever direction it's facing
-Come up with a gaming loop
-Maybe add different layers of water for bucket to indicate water level for well refill
+[ ] Come up with a gaming loop
+[ ] Maybe add different layers of water for bucket to indicate water level for well refill
+[ ] Implement day timer (60s countdown, display on screen)
+[ ] Add end-of-day trigger (auto or key press)
+[ ] Auto-harvest ripe crops at day end
+[ ] Reset water/growth states for new day
+[ ] Add day counter + gold tracking
+[ ] Test full loop: plant → grow → harvest → sell → next day
 
 Kenney.nl: Often called the "Gold Standard" of free assets. Everything is CC0, meaning you can use it for anything without even giving credit. Look for his "Pixel" or "RPG" packs.
 Itch.io (Free Assets): This is a goldmine. Thousands of indie artists post free packs here. You can filter specifically for "Top-down" and "Pixel Art."
 OpenGameArt.org: An older but massive community-driven site. You can find everything from character sprite sheets to environment tilesets.
 CraftPix (Freebies Section): They have high-quality "Top-down" tilesets (grass, paths, towns) that would work perfectly for a Firebase multiplayer map.
-
-.
-├── assets/                 # Raw and processed game assets
-│   ├── images/             # Sprite sheets and tilesets
-│   ├── maps/               # Tiled JSON files (if using Tiled)
-│   └── atlas/              # .pct or .json atlas files
-├── src/
-│   ├── main.js             # Entry point / Game configuration
-│   ├── constants.js        # Grid size, tile types, crop growth rates
-│   ├── scenes/             # Phaser Scene classes
-│   │   ├── Boot.js         # Asset loading
-│   │   ├── MainGame.js     # The core farming loop
-│   │   └── UI.js           # Gold, Water, and Inventory overlays
-│   ├── entities/           # Logic for specific game objects
-│   │   ├── Player.js       # Movement and interaction logic
-│   │   ├── Crop.js         # Growth states and harvesting logic
-│   │   └── Tile.js         # State machine (Dirt, Tilled, Watered)
-│   ├── utils/              # Helper functions
-│   │   └── GridMath.js     # Mapping world coords to array indices
-│   └── style.css
-├── index.html
-├── package.json
-├── notes/                  # Keep your proj.md and other docs here
-│   └── proj.md
-└── .gitignore
 
 If you ever need camera offsets or viewport panning in the future, you'd use Phaser's camera system instead of hardcoding offsets everywhere.
