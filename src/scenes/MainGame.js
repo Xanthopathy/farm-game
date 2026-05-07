@@ -188,11 +188,16 @@ export class MainGame extends Scene {
 
     this.player.update(delta);
 
+    // Calculate target coordinates based on player facing
+    this.calculateTargetCoordinates();
+
     this.debugDisplay.update(
       this.player,
       this.tileSize,
       this.showDebugGrid,
       this.showDebugText,
+      this.targetX,
+      this.targetY,
     );
 
     this.uiDisplay.update(this.player, this);
@@ -202,24 +207,48 @@ export class MainGame extends Scene {
     }
   }
 
-  handleInteraction() {
-    if (this.player.isBusy) return;
-
+  calculateTargetCoordinates() {
     const { gridX, gridY } = getGridCoords(
       this.player.x,
       this.player.y,
       this.tileSize,
     );
-    // Check if player is within the bounds of our grid array
+
+    this.targetX = gridX;
+    this.targetY = gridY;
+
+    switch (this.player.facing) {
+      case "up":
+        this.targetY -= 1;
+        break;
+      case "down":
+        this.targetY += 1;
+        break;
+      case "left":
+        this.targetX -= 1;
+        break;
+      case "right":
+        this.targetX += 1;
+        break;
+    }
+  }
+
+  handleInteraction() {
+    if (this.player.isBusy) return;
+
+    const targetX = this.targetX;
+    const targetY = this.targetY;
+
+    // Check if target is within the bounds of our grid array
     const tile =
-      this.grid[gridY] && this.grid[gridY][gridX]
-        ? this.grid[gridY][gridX]
+      this.grid[targetY] && this.grid[targetY][targetX]
+        ? this.grid[targetY][targetX]
         : null;
     const tool = this.player.currentTool;
 
     // Static object interaction (check regardless of tool)
     // Well (9, 4 with a top half)
-    if (gridX === 9 && (gridY === 3 || gridY === 4)) {
+    if (targetX === 9 && (targetY === 3 || targetY === 4)) {
       this.player.performAction(500, () => {
         this.water = this.maxWater;
         console.log(`Water refilled: ${this.water}/${this.maxWater}`);
@@ -228,7 +257,7 @@ export class MainGame extends Scene {
     }
 
     // Shipping Bin (15, 4)
-    if (gridX === 15 && gridY === 4) {
+    if (targetX === 15 && targetY === 4) {
       if (this.inventory.length > 0) {
         this.player.performAction(300, () => this.sellCrops());
       } else {

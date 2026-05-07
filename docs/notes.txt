@@ -1,9 +1,7 @@
-Change player icon to a variety of tools in objects.png
-Add small delay between each action
+[DONE] Add small delay between each action
+[DONE] Have the targeted tile (not the coords the player is exactly on) to be shifted by 1 tile in whatever direction it's facing
 Come up with a gaming loop
 Maybe add different layers of water for bucket to indicate water level for well refill
-
-Have the targeted tile (not the coords the player is exactly on) to be shifted by 1 tile in whatever direction it's facing
 
 Kenney.nl: Often called the "Gold Standard" of free assets. Everything is CC0, meaning you can use it for anything without even giving credit. Look for his "Pixel" or "RPG" packs.
 Itch.io (Free Assets): This is a goldmine. Thousands of indie artists post free packs here. You can filter specifically for "Top-down" and "Pixel Art."

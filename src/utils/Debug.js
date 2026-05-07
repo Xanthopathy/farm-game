@@ -17,11 +17,14 @@ export class DebugDisplay {
       .setVisible(false);
   }
 
-  update(player, tileSize, showGrid, showText) {
+  update(player, tileSize, showGrid, showText, targetX, targetY) {
     const { gridX, gridY } = getGridCoords(player.x, player.y, tileSize);
 
-    this.graphics.clear();
+    // Fall back to player tile if no target provided
+    const highlightX = targetX ?? gridX;
+    const highlightY = targetY ?? gridY;
 
+    this.graphics.clear();
     this.debugText.setVisible(showText);
 
     if (showText) {
@@ -53,7 +56,11 @@ export class DebugDisplay {
       this.graphics.lineBetween(1, 0, 1, height); // Left
 
       // Draw dot and tile highlight based on the logical farming grid
-      const { x: dotX, y: dotY } = getPixelCoords(gridX, gridY, tileSize);
+      const { x: dotX, y: dotY } = getPixelCoords(
+        highlightX,
+        highlightY,
+        tileSize,
+      );
 
       // Highlight the specific tile bounds in red
       this.graphics.lineStyle(1, 0xff0000, 1);

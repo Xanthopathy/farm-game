@@ -110,24 +110,28 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     this.isBusy = true;
+    const isLeft = this.facing === "left";
 
     // Position and show the tool
     let ox = 0,
       oy = 0;
     if (this.facing === "right") ox = 12;
-    else if (this.facing === "left") ox = -12;
+    else if (isLeft) ox = -12;
     else if (this.facing === "up") oy = -8;
     else oy = 8;
 
     this.toolVisual.setTexture(tool.texture, tool.frame);
     this.toolVisual.setPosition(this.x + ox, this.y + oy);
+    this.toolVisual.setFlipX(isLeft);
     this.toolVisual.setVisible(true);
-    this.toolVisual.setAngle(-45);
 
+    const startAngle = isLeft ? 45 : -45;
+    const endAngle = isLeft ? -45 : 45;
+    this.toolVisual.setAngle(startAngle);
     // Swing animation
     this.scene.tweens.add({
       targets: this.toolVisual,
-      angle: 45,
+      angle: endAngle,
       duration: duration,
       ease: "Cubic.out",
     });
