@@ -137,6 +137,12 @@ export class MainGame extends Scene {
     this.showDebugGrid = false;
     this.showDebugText = false;
 
+    this.input.on("pointerdown", (pointer) => {
+      if (pointer.leftButtonDown()) {
+        this.handleInteraction();
+      }
+    });
+
     this.debugDisplay = new DebugDisplay(this);
     this.uiDisplay = new UIDisplay(this);
   }
@@ -169,6 +175,8 @@ export class MainGame extends Scene {
   }
 
   update(time, delta) {
+    this.player.update(delta);
+
     // Loop through the grid and update any existing crops
     this.grid.forEach((row) => {
       row.forEach((tile) => {
@@ -178,6 +186,14 @@ export class MainGame extends Scene {
       });
     });
 
+    if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
+      this.handleInteraction();
+    }
+
+    if (this.shift.isDown) {
+      this.player.speed = 60;
+    }
+
     if (Phaser.Input.Keyboard.JustDown(this.gKey)) {
       this.showDebugGrid = !this.showDebugGrid;
     }
@@ -185,12 +201,6 @@ export class MainGame extends Scene {
     if (Phaser.Input.Keyboard.JustDown(this.bKey)) {
       this.showDebugText = !this.showDebugText;
     }
-
-    if (this.shift.isDown) {
-      this.player.speed = 60;
-    }
-
-    this.player.update(delta);
 
     // Calculate target coordinates based on player facing
     this.calculateTargetCoordinates();
@@ -206,10 +216,6 @@ export class MainGame extends Scene {
 
     this.uiDisplay.update(this.player, this);
 
-    if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
-      this.handleInteraction();
-    }
-
     if (this.isDayActive) {
       this.dayTimer += delta;
       if (this.dayTimer >= this.dayTime) {
@@ -224,7 +230,7 @@ export class MainGame extends Scene {
     // Auto-harvest all ripe crops
     this.grid.forEach((row) => {
       row.forEach((tile) => {
-        if (tile.crop && tile.crop.isRipe()) {
+        if (tile.crop && tile.crop.isMature) {
           const harvested = tile.harvest();
           if (harvested) this.inventory.push(harvested);
         }
@@ -271,72 +277,81 @@ export class MainGame extends Scene {
 
     const targetX = this.targetX;
     const targetY = this.targetY;
+    const tool = this.player.currentTool;
+    const duration = tool === TOOLS.NONE ? 0 : 250;
 
     // Check if target is within the bounds of our grid array
-    const tile =
-      this.grid[targetY] && this.grid[targetY][targetX]
-        ? this.grid[targetY][targetX]
-        : null;
-    const tool = this.player.currentTool;
+    // const tile =
+    //   this.grid[targetY] && this.grid[targetY][targetX]
+    //     ? this.grid[targetY][targetX]
+    //     : null;
+    const tile = this.grid[targetY]?.[targetX] ?? null;
 
-    // Static object interaction (check regardless of tool)
+    this.player.performAction(duration, () => {
+      this.handleObjectInteraction(targetX, targetY, tool) ||
+        this.handleTileInteraction(tile, tool);
+    });
+  }
+
+  handleObjectInteraction(targetX, targetY, tool) {
     // Well (9, 4 with a top half)
-    if (targetX === 9 && (targetY === 3 || targetY === 4)) {
-      this.player.performAction(500, () => {
-        this.water = this.maxWater;
-        console.log(`Water refilled: ${this.water}/${this.maxWater}`);
-      });
-      return;
+    if (
+      targetX === 9 &&
+      (targetY === 3 || targetY === 4) &&
+      tool === TOOLS.BUCKET
+    ) {
+      this.water = this.maxWater;
+      console.log(`Water refilled: ${this.water}/${this.maxWater}`);
+      return true;
     }
 
     // Shipping Bin (15, 4)
     if (targetX === 15 && targetY === 4) {
       if (this.inventory.length > 0) {
-        this.player.performAction(300, () => this.sellCrops());
+        this.sellCrops();
       } else {
         console.log("Inventory empty!");
       }
-      return;
+      return true;
     }
+    return false;
+  }
 
-    // Tile-based interaction
+  handleTileInteraction(tile, tool) {
     if (!tile) return;
 
-    this.player.performAction(250, () => {
-      switch (tool) {
-        case TOOLS.HOE:
-          tile.till();
-          break;
+    switch (tool) {
+      case TOOLS.HOE:
+        tile.till();
+        break;
 
-        case TOOLS.SEEDS:
-          tile.plant(CROP_TYPES.CORN);
-          break;
+      case TOOLS.SEEDS:
+        tile.plant(CROP_TYPES.CORN);
+        break;
 
-        case TOOLS.BUCKET:
-          if (this.water > 0) {
-            if (tile.isTilled && !tile.isWatered) {
-              tile.water();
-              this.water--;
-              console.log(`Water left: ${this.water}`);
-            }
-          } else {
-            console.log("Out of water! Refill at the well!");
+      case TOOLS.BUCKET:
+        if (this.water > 0) {
+          if (tile.isTilled && !tile.isWatered) {
+            tile.water();
+            this.water--;
+            console.log(`Water left: ${this.water}`);
           }
-          break;
+        } else {
+          console.log("Out of water!");
+        }
+        break;
 
-        case TOOLS.SCYTHE:
-          const harvested = tile.harvest();
-          if (harvested) {
-            this.inventory.push(harvested);
-            console.log(`Stored ${harvested.cropName} in inventory`);
-          }
-          break;
+      case TOOLS.SCYTHE:
+        const harvested = tile.harvest();
+        if (harvested) {
+          this.inventory.push(harvested);
+          console.log(`Stored ${harvested.cropName} in inventory`);
+        }
+        break;
 
-        default:
-          console.log("No tool equipped!");
-          break;
-      }
-    });
+      default:
+        console.log("No tool equipped!");
+    }
   }
 
   sellCrops() {
