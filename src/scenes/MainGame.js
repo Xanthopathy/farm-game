@@ -35,9 +35,11 @@ export class MainGame extends Scene {
     this.inventory = [];
 
     this.day = 1;
-    this.dayTime = 60000;
+    this.dayTime = 120000;
     this.dayTimer = 0;
     this.isDayActive = true;
+    this.quota = 50; // Initial daily quota
+    this.gameOver = false;
     // TODO: Make UI bar for Gold and tool selection (water is shown as a value bottom right of bucket/can icon)
   }
 
@@ -175,6 +177,8 @@ export class MainGame extends Scene {
   }
 
   update(time, delta) {
+    if (this.gameOver) return;
+
     this.player.update(delta);
 
     // Loop through the grid and update any existing crops
@@ -225,25 +229,29 @@ export class MainGame extends Scene {
   }
 
   endDay() {
-    // Not meant to be final result as we want harvest & selling to be in the day and endDay to check if you met quota
-    this.isDayActive = false;
-    // Auto-harvest all ripe crops
-    this.grid.forEach((row) => {
-      row.forEach((tile) => {
-        if (tile.crop && tile.crop.isMature) {
-          const harvested = tile.harvest();
-          if (harvested) this.inventory.push(harvested);
-        }
-      });
-    });
-    // Sell inventory
-    this.sellCrops();
-    // Reset for next day
-    this.day++;
-    this.dayTimer = 0;
-    this.water = this.maxWater;
-    this.isDayActive = true;
-    console.log(`Day ${this.day} started!`);
+    // Check if player met the quota
+    if (this.gold >= this.quota) {
+      this.gold -= this.quota;
+      console.log(
+        `Paid quota of ${this.quota}g. Remaining gold: ${this.gold}g`,
+      );
+
+      // Increase quota of the day
+      this.quota += 50;
+
+      // Advance to the next day
+      this.day++;
+      this.dayTimer = 0;
+      this.water = this.maxWater;
+      this.isDayActive = true;
+      console.log(`Day ${this.day} started! New quota: ${this.quota}g`);
+    } else {
+      console.log(
+        `Failed to pay quota! Needed ${this.quota}g, had ${this.gold}g. Game Over!`,
+      );
+      this.gameOver = true;
+      this.isDayActive = false;
+    }
   }
 
   calculateTargetCoordinates() {
@@ -273,13 +281,13 @@ export class MainGame extends Scene {
   }
 
   handleInteraction() {
-    if (this.player.isBusy) return;
+    if (this.player.isBusy || this.gameOver) return;
 
     const targetX = this.targetX;
     const targetY = this.targetY;
     const tool = this.player.currentTool;
     const duration = tool === TOOLS.NONE ? 0 : 250;
-    let frame = tool.frames.default;
+    let frame = tool === TOOLS.NONE ? null : tool.frames.default;
     if (tool === TOOLS.BUCKET && this.water === 0) {
       frame = tool.frames.empty;
     }
@@ -291,10 +299,14 @@ export class MainGame extends Scene {
     //     : null;
     const tile = this.grid[targetY]?.[targetX] ?? null;
 
-    this.player.performAction(duration, () => {
-      this.handleObjectInteraction(targetX, targetY, tool) ||
-        this.handleTileInteraction(tile, tool);
-    }, frame);
+    this.player.performAction(
+      duration,
+      () => {
+        this.handleObjectInteraction(targetX, targetY, tool) ||
+          this.handleTileInteraction(tile, tool);
+      },
+      frame,
+    );
   }
 
   handleObjectInteraction(targetX, targetY, tool) {

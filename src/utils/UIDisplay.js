@@ -17,7 +17,7 @@ export class UIDisplay {
       .setDepth(1000);
 
     this.toolIcon = scene.add
-      .sprite(150, 50, "tiny_town", 0)
+      .sprite(170, 50, "tiny_town", 0)
       .setScale(2)
       .setOrigin(0)
       .setScrollFactor(0)
@@ -29,10 +29,12 @@ export class UIDisplay {
     const goldCount = game.gold;
     const waterCount = game.water;
     const inventoryCount = game.inventory.length;
-    const dayInfo = `Day: ${game.day} | Time: ${Math.ceil((game.dayTime - game.dayTimer) / 1000)}s`;
+    const dayInfo = game.gameOver
+      ? `GAME OVER - Day: ${game.day} | Failed quota: ${game.quota}g`
+      : `Day: ${game.day} | Time: ${Math.ceil((game.dayTime - game.dayTimer) / 1000)}s\nQuota: ${game.quota}g`;
 
     this.uiText.setText(
-      `${dayInfo}\nTool: ${toolName}\nGold: ${goldCount}\nWater: ${waterCount}/${game.maxWater}\nHarvest: ${inventoryCount}`,
+      `${dayInfo} | Gold: ${goldCount}g\nWater: ${waterCount}/${game.maxWater}\nTool: ${toolName}\nHarvested: ${inventoryCount}`,
     );
 
     if (player.currentTool.texture) {

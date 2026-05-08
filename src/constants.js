@@ -28,7 +28,7 @@ export const CROP_TYPES = {
       { bottom: 119, top: 103 }, // Stage 6 - bottom + top
     ],
     growthTime: 3000,
-    sellValue: 10,
+    sellValue: 3,
   },
   CORN: {
     name: "Corn",
@@ -41,7 +41,7 @@ export const CROP_TYPES = {
       { bottom: 31, top: 15 }, // Stage 5 - bottom + top
     ],
     growthTime: 5000,
-    sellValue: 20,
+    sellValue: 10,
   },
 };
 
@@ -53,7 +53,17 @@ export const WORLD_OBJECTS = {
 export const TOOLS = {
   NONE: { id: 0, label: "None" },
   HOE: { id: 1, label: "Hoe", texture: "tiny_town", frames: { default: 116 } },
-  BUCKET: { id: 2, label: "Bucket", texture: "tiny_town", frames: { default: 131, empty: 130 } },
+  BUCKET: {
+    id: 2,
+    label: "Bucket",
+    texture: "tiny_town",
+    frames: { default: 131, empty: 130 },
+  },
   SEEDS: { id: 3, label: "Seeds", texture: "objects", frames: { default: 24 } },
-  SCYTHE: { id: 4, label: "Scythe", texture: "tiny_town", frames: { default: 129 } },
+  SCYTHE: {
+    id: 4,
+    label: "Scythe",
+    texture: "tiny_town",
+    frames: { default: 129 },
+  },
 };
