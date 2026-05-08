@@ -38,7 +38,15 @@ export class Player extends Phaser.GameObjects.Sprite {
       scythe: "FOUR",
     });
 
-    this.currentTool = TOOLS.NONE;
+    this.toolOrder = [
+      TOOLS.NONE,
+      TOOLS.HOE,
+      TOOLS.BUCKET,
+      TOOLS.SEEDS,
+      TOOLS.SCYTHE,
+    ];
+    this.selectedToolIndex = 0;
+    this.currentTool = this.toolOrder[this.selectedToolIndex];
     this.isBusy = false; // Action delay
 
     // Visual indicator for tools during action
@@ -190,20 +198,27 @@ export class Player extends Phaser.GameObjects.Sprite {
     // JustDown = once per press
     const JustDown = Phaser.Input.Keyboard.JustDown;
     if (JustDown(this.toolKeys.none)) {
-      this.currentTool = TOOLS.NONE;
-      console.log("Unequipped tool");
+      this.selectToolByIndex(0);
     } else if (JustDown(this.toolKeys.hoe)) {
-      this.currentTool = TOOLS.HOE;
-      console.log("Equipped: Hoe");
+      this.selectToolByIndex(1);
     } else if (JustDown(this.toolKeys.bucket)) {
-      this.currentTool = TOOLS.BUCKET;
-      console.log("Equipped: Bucket");
+      this.selectToolByIndex(2);
     } else if (JustDown(this.toolKeys.seeds)) {
-      this.currentTool = TOOLS.SEEDS;
-      console.log("Equipped: Seeds");
+      this.selectToolByIndex(3);
     } else if (JustDown(this.toolKeys.scythe)) {
-      this.currentTool = TOOLS.SCYTHE;
-      console.log("Equipped: Scythe");
+      this.selectToolByIndex(4);
     }
+  }
+
+  selectToolByIndex(index) {
+    const clampedIndex = Phaser.Math.Wrap(index, 0, this.toolOrder.length);
+    this.selectedToolIndex = clampedIndex;
+    this.currentTool = this.toolOrder[this.selectedToolIndex];
+    console.log(`Equipped: ${this.currentTool.label}`);
+  }
+
+  cycleTool(direction) {
+    if (this.isBusy) return;
+    this.selectToolByIndex(this.selectedToolIndex + direction);
   }
 }

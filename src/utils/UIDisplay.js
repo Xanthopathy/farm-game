@@ -30,7 +30,7 @@ export class UIDisplay {
     const waterCount = game.water;
     const inventoryCount = game.inventory.length;
     const dayInfo = game.gameOver
-      ? `GAME OVER - Day: ${game.day} | Failed quota: ${game.quota}g`
+      ? `GAME OVER - Day: ${game.day}\nFailed quota: ${game.quota}g`
       : `Day: ${game.day} | Time: ${Math.ceil((game.dayTime - game.dayTimer) / 1000)}s\nQuota: ${game.quota}g`;
 
     this.uiText.setText(

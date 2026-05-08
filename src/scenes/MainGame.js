@@ -35,7 +35,7 @@ export class MainGame extends Scene {
     this.inventory = [];
 
     this.day = 1;
-    this.dayTime = 120000;
+    this.dayTime = 60000;
     this.dayTimer = 0;
     this.isDayActive = true;
     this.quota = 50; // Initial daily quota
@@ -131,7 +131,7 @@ export class MainGame extends Scene {
     );
 
     const KeyCodes = Phaser.Input.Keyboard.KeyCodes;
-    this.player = new Player(this, 10, 6, this.tileSize);
+    this.player = new Player(this, 12, 6, this.tileSize);
     this.spaceBar = this.input.keyboard.addKey(KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(KeyCodes.SHIFT);
     this.gKey = this.input.keyboard.addKey(KeyCodes.G);
@@ -143,6 +143,11 @@ export class MainGame extends Scene {
       if (pointer.leftButtonDown()) {
         this.handleInteraction();
       }
+    });
+
+    this.input.on("wheel", (pointer, gameObjects, deltaX, deltaY) => {
+      if (deltaY === 0) return;
+      this.player.cycleTool(deltaY > 0 ? 1 : -1);
     });
 
     this.debugDisplay = new DebugDisplay(this);
@@ -177,37 +182,44 @@ export class MainGame extends Scene {
   }
 
   update(time, delta) {
-    if (this.gameOver) return;
+    if (!this.gameOver) {
+      this.player.update(delta);
 
-    this.player.update(delta);
-
-    // Loop through the grid and update any existing crops
-    this.grid.forEach((row) => {
-      row.forEach((tile) => {
-        if (tile.crop) {
-          tile.crop.update(delta, tile.isWatered);
-        }
+      // Loop through the grid and update any existing crops
+      this.grid.forEach((row) => {
+        row.forEach((tile) => {
+          if (tile.crop) {
+            tile.crop.update(delta, tile.isWatered);
+          }
+        });
       });
-    });
 
-    if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
-      this.handleInteraction();
+      if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
+        this.handleInteraction();
+      }
+
+      if (this.shift.isDown) {
+        this.player.speed = 60;
+      }
+
+      if (Phaser.Input.Keyboard.JustDown(this.gKey)) {
+        this.showDebugGrid = !this.showDebugGrid;
+      }
+
+      if (Phaser.Input.Keyboard.JustDown(this.bKey)) {
+        this.showDebugText = !this.showDebugText;
+      }
+
+      // Calculate target coordinates based on player facing
+      this.calculateTargetCoordinates();
+
+      if (this.isDayActive) {
+        this.dayTimer += delta;
+        if (this.dayTimer >= this.dayTime) {
+          this.endDay();
+        }
+      }
     }
-
-    if (this.shift.isDown) {
-      this.player.speed = 60;
-    }
-
-    if (Phaser.Input.Keyboard.JustDown(this.gKey)) {
-      this.showDebugGrid = !this.showDebugGrid;
-    }
-
-    if (Phaser.Input.Keyboard.JustDown(this.bKey)) {
-      this.showDebugText = !this.showDebugText;
-    }
-
-    // Calculate target coordinates based on player facing
-    this.calculateTargetCoordinates();
 
     this.debugDisplay.update(
       this.player,
@@ -219,13 +231,6 @@ export class MainGame extends Scene {
     );
 
     this.uiDisplay.update(this.player, this);
-
-    if (this.isDayActive) {
-      this.dayTimer += delta;
-      if (this.dayTimer >= this.dayTime) {
-        this.endDay();
-      }
-    }
   }
 
   endDay() {
