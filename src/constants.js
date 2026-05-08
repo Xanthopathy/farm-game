@@ -19,9 +19,24 @@ export const TILE_TYPES = {
       variations: [12, 28, 29, 44],
     },
   },
-  DIRT: { texture: "terrain", frames: { default: 45 } },
+  DIRT: {
+    texture: "terrain",
+    frames: {
+      default: 45,
+      variations: [60, 61, 76, 77],
+    },
+  },
   TILLED: { texture: "terrain", frames: { default: 92 } },
-  PATH: { texture: "objects", frames: { default: 21 } },
+  PATH: {
+    texture: "objects",
+    frames: {
+      default: 21,
+      noTL: 22,
+      noTR: 23,
+      noBL: 38,
+      noBR: 39,
+    },
+  },
 };
 
 // Bitmask: TL:1, T:2, TR:4, L:8, R:16, BL:32, B:64, BR:128
