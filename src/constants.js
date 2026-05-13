@@ -18,6 +18,7 @@ export const TILE_TYPES = {
       default: 13,
       variations: [12, 28, 29, 44],
     },
+    variationChance: 0.2, // 20% chance for variation
   },
   DIRT: {
     texture: "terrain",
@@ -25,9 +26,11 @@ export const TILE_TYPES = {
       default: 45,
       variations: [60, 61, 76, 77],
     },
+    variationChance: 0.3, // 30% chance for variation
   },
   TILLED: { texture: "terrain", frames: { default: 92 } },
   PATH: {
+    // STONE PATH IN OBJECTS.PNG WITH VARIATIONS FOR CONNECTING NEIGHBORS NOT DECORATION
     texture: "objects",
     frames: {
       default: 21,

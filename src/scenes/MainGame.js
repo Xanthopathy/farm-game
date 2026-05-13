@@ -68,24 +68,53 @@ export class MainGame extends Scene {
   }
 
   create() {
-    // Fill the entire screen with base grass (Frame 13 from terrain)
-    this.add
-      .tileSprite(
-        0,
-        0,
-        this.scale.width,
-        this.scale.height,
-        TILE_TYPES.GRASS.texture,
-        TILE_TYPES.GRASS.frames.default,
-      )
-      .setOrigin(0)
-      .setTileScale(2)
-      .setDepth(DEPTHS.GRASS);
-
     const cols = 19;
     const rows = 11;
     const gridXOffset = 3;
     const gridYOffset = 6;
+
+    // Create grass background tiles with variations for entire screen
+    // Cover full screen width and height
+    const maxGridX = Math.ceil(this.scale.width / this.tileSize) + 1;
+    const maxGridY = Math.ceil(this.scale.height / this.tileSize) + 1;
+
+    for (let y = 0; y < maxGridY; y++) {
+      for (let x = 0; x < maxGridX; x++) {
+        // Skip tiles that are part of the main grid (will be drawn as DIRT/PATH)
+        if (
+          x >= gridXOffset &&
+          x < gridXOffset + cols &&
+          y >= gridYOffset &&
+          y < gridYOffset + rows
+        ) {
+          continue;
+        }
+
+        const { x: posX, y: posY } = getPixelCoords(x, y, this.tileSize);
+
+        // Select frame: use variation with chance, otherwise default
+        let frameToUse = TILE_TYPES.GRASS.frames.default;
+        if (
+          TILE_TYPES.GRASS.frames.variations &&
+          TILE_TYPES.GRASS.variationChance &&
+          Math.random() < TILE_TYPES.GRASS.variationChance
+        ) {
+          frameToUse = Phaser.Utils.Array.GetRandom(
+            TILE_TYPES.GRASS.frames.variations,
+          );
+        }
+
+        this.add
+          .sprite(
+            posX,
+            posY,
+            TILE_TYPES.GRASS.texture,
+            frameToUse,
+          )
+          .setScale(2)
+          .setDepth(DEPTHS.GRASS);
+      }
+    }
 
     // Building the grid
     for (let y = gridYOffset; y < rows + gridYOffset; y++) {

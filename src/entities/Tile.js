@@ -8,14 +8,34 @@ export class Tile {
     this.scene = scene;
     this.x = x;
     this.y = y;
-    this.type = type; // "DIRT" or "PATH"
+    this.type = type; // "DIRT", "PATH", etc.
     this.isTilled = false;
     this.isWatered = false;
     this.crop = null;
 
+    // For PATH tiles, add a dirt background layer
+    if (type === "PATH") {
+      scene.add
+        .sprite(x, y, TILE_TYPES.DIRT.texture, TILE_TYPES.DIRT.frames.default)
+        .setScale(2)
+        .setDepth(DEPTHS.TILE - 0.5); // Just below the PATH tile
+    }
+
+    // Select frame: use variation with chance, otherwise default
+    let frameToUse = visualConfig.frames.default;
+    if (
+      visualConfig.frames.variations &&
+      visualConfig.variationChance &&
+      Math.random() < visualConfig.variationChance
+    ) {
+      frameToUse = Phaser.Utils.Array.GetRandom(
+        visualConfig.frames.variations,
+      );
+    }
+
     // Create the visual representation
     this.sprite = scene.add
-      .sprite(x, y, visualConfig.texture, visualConfig.frames.default)
+      .sprite(x, y, visualConfig.texture, frameToUse)
       .setScale(2)
       .setDepth(DEPTHS.TILE);
   }
