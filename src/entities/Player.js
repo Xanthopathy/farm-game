@@ -21,7 +21,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.setScale(2);
     this.setOrigin(0.5, 0.75);
     this.setDepth(DEPTHS.PLAYER);
-    this.speed = 180;
+    this.speed = 120;
 
     this.cursors = scene.input.keyboard.addKeys({
       up: "W",
@@ -94,7 +94,7 @@ export class Player extends Phaser.GameObjects.Sprite {
           start: cfg.start,
           end: cfg.end,
         }),
-        frameRate: cfg.sheet === "player_idle" ? 4 : 6,
+        frameRate: cfg.sheet === "player_idle" ? 4 : 12,
         repeat: cfg.repeat,
       });
     });

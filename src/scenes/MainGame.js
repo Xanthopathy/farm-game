@@ -82,9 +82,9 @@ export class MainGame extends Scene {
       .setTileScale(2)
       .setDepth(DEPTHS.GRASS);
 
-    const cols = 21;
-    const rows = 13;
-    const gridXOffset = 2;
+    const cols = 19;
+    const rows = 11;
+    const gridXOffset = 3;
     const gridYOffset = 6;
 
     // Building the grid
@@ -107,8 +107,8 @@ export class MainGame extends Scene {
       }
     }
 
-    // Place bin at grid (15, 4)
-    const binPixels = getPixelCoords(15, 4, this.tileSize);
+    // Place bin at grid (15, 3)
+    const binPixels = getPixelCoords(15, 3, this.tileSize);
     this.shippingBin = this.add
       .sprite(
         binPixels.x,
@@ -119,8 +119,8 @@ export class MainGame extends Scene {
       .setScale(2)
       .setDepth(DEPTHS.OBJECTS);
 
-    // Place well at grid (9, 4)
-    const wellPixels = getPixelCoords(9, 4, this.tileSize);
+    // Place well at grid (9, 3)
+    const wellPixels = getPixelCoords(9, 3, this.tileSize);
     this.well = createStack(
       this,
       wellPixels.x,
@@ -315,10 +315,10 @@ export class MainGame extends Scene {
   }
 
   handleObjectInteraction(targetX, targetY, tool) {
-    // Well (9, 4 with a top half)
+    // Well (9, 3 with a top half)
     if (
       targetX === 9 &&
-      (targetY === 3 || targetY === 4) &&
+      (targetY === 2 || targetY === 3) &&
       tool === TOOLS.BUCKET
     ) {
       this.water = this.maxWater;
@@ -326,8 +326,8 @@ export class MainGame extends Scene {
       return true;
     }
 
-    // Shipping Bin (15, 4)
-    if (targetX === 15 && targetY === 4) {
+    // Shipping Bin (15, 3)
+    if (targetX === 15 && targetY === 3) {
       if (this.inventory.length > 0) {
         this.sellCrops();
       } else {
