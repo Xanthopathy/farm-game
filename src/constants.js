@@ -39,7 +39,9 @@ export const TILE_TYPES = {
   },
 };
 
+// Starting from 0, 0 in top left corner of terrain.png
 // Bitmask: TL:1, T:2, TR:4, L:8, R:16, BL:32, B:64, BR:128
+// Sum of bitmask corresponds to which of the 8 neighbors are the same type, which determines the tile frame to use
 // Key = sum of bitmask, value = frame index
 const BASE_BITMASK_PATTERN = {
   64: 0,
@@ -103,6 +105,29 @@ const createTableWithOffset = (offset) => {
 
 export const GRASS_BITMASK_TABLE = createTableWithOffset(0);
 export const TILLED_BITMASK_TABLE = createTableWithOffset(48);
+
+// Starting from 0, 0 in top left corner of objects.png
+// Bitmask: T: 1, R:2, B:4, L:8
+// Sum of bitmask corresponds to which of the 8 neighbors are the same type, which determines the tile frame to use
+// Key = sum of bitmask, value = frame index
+export const FENCE_BITMASK_TABLE = {
+  6: 0,
+  11: 1,
+  12: 2,
+  4: 3,
+  7: 16,
+  15: 17,
+  13: 18,
+  5: 19,
+  3: 32,
+  11: 33,
+  9: 34,
+  1: 35,
+  2: 48,
+  10: 49,
+  8: 50,
+  0: 51,
+};
 
 export const CROP_TYPES = {
   WHEAT: {
