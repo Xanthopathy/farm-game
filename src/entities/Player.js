@@ -1,6 +1,7 @@
 // src/entities/Player.js
 import * as Phaser from "phaser";
 import { DEPTHS, TOOLS } from "../constants";
+import { PLAYER_SPEED } from "../config/WorldConfig";
 import { getPixelCoords } from "../utils/GridMath";
 
 export class Player extends Phaser.GameObjects.Sprite {
@@ -21,7 +22,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.setScale(2);
     this.setOrigin(0.5, 0.75);
     this.setDepth(DEPTHS.PLAYER);
-    this.speed = 120;
+    this.speed = PLAYER_SPEED.normal;
 
     this.cursors = scene.input.keyboard.addKeys({
       up: "W",

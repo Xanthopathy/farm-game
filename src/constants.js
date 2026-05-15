@@ -175,7 +175,7 @@ export const TOOLS = {
     label: "None",
   },
   HOE: {
-    d: 1,
+    id: 1,
     label: "Hoe",
     texture: "tiny_town",
     frames: { default: 116 },
