@@ -133,8 +133,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.toolVisual.setFlipX(isLeft);
     this.toolVisual.setVisible(true);
 
-    const startAngle = isLeft ? 45 : -45;
-    const endAngle = isLeft ? -45 : 45;
+    const startAngle = isLeft ? 75 : -75;
+    const endAngle = isLeft ? -75 : 75;
     this.toolVisual.setAngle(startAngle);
     // Swing animation
     this.scene.tweens.add({

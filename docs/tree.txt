@@ -8,7 +8,6 @@
 |       |-- player
 |       |   |-- Idle.png
 |       |   `-- Walk.png
-|       |-- player.png
 |       |-- terrain.png
 |       `-- tiny_town.png
 `-- src
@@ -24,6 +23,7 @@
     `-- utils
         |-- Debug.js
         |-- GridMath.js
-        `-- SpriteUtils.js
+        |-- SpriteUtils.js
+        `-- UIDisplay.js
 
 7 directories, 19 files

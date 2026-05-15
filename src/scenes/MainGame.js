@@ -68,6 +68,8 @@ export class MainGame extends Scene {
   }
 
   create() {
+    this.input.mouse.disableContextMenu();
+
     const cols = 19;
     const rows = 11;
     const gridXOffset = 3;
@@ -105,12 +107,7 @@ export class MainGame extends Scene {
         }
 
         this.add
-          .sprite(
-            posX,
-            posY,
-            TILE_TYPES.GRASS.texture,
-            frameToUse,
-          )
+          .sprite(posX, posY, TILE_TYPES.GRASS.texture, frameToUse)
           .setScale(2)
           .setDepth(DEPTHS.GRASS);
       }
@@ -320,7 +317,7 @@ export class MainGame extends Scene {
     const targetX = this.targetX;
     const targetY = this.targetY;
     const tool = this.player.currentTool;
-    const duration = tool === TOOLS.NONE ? 0 : 250;
+    const duration = tool === TOOLS.NONE ? 0 : 500;
     let frame = tool === TOOLS.NONE ? null : tool.frames.default;
     if (tool === TOOLS.BUCKET && this.water === 0) {
       frame = tool.frames.empty;
