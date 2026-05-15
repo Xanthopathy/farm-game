@@ -40,6 +40,10 @@ export class Tile {
       .setDepth(DEPTHS.TILE);
   }
 
+  setTerrainFrame(texture, frame) {
+    this.sprite.setTexture(texture, frame);
+  }
+
   squishFX() {
     // Add a little "squish" effect
     this.scene.tweens.add({
@@ -69,7 +73,6 @@ export class Tile {
   water() {
     if (this.isTilled && !this.isWatered) {
       this.isWatered = true;
-      this.sprite.setTint(0x999999); // Darker tint for watered soil
     }
 
     this.squishFX();
@@ -98,7 +101,6 @@ export class Tile {
 
       // Reset tile state (back to tilled)
       this.isWatered = false;
-      this.sprite.clearTint();
 
       this.squishFX();
 

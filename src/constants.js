@@ -8,6 +8,7 @@ export const DEPTHS = {
   PLAYER: 10,
 };
 
+// Flat tiles
 export const TILE_TYPES = {
   // 8-Bit Values
   // NW:1, N:2, NE:4, W:8, E:16, SW:32, S:64, SE:128
@@ -108,7 +109,7 @@ const createTableWithOffset = (offset) => {
 };
 
 export const GRASS_BITMASK_TABLE = createTableWithOffset(0);
-export const TILLED_BITMASK_TABLE = createTableWithOffset(48);
+export const TILLED_BITMASK_TABLE = createTableWithOffset(64);
 
 // Starting from 0, 0 in top left corner of objects.png
 // Bitmask: T: 1, R:2, B:4, L:8

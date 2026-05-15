@@ -13,7 +13,20 @@ import {
   CROP_TYPES,
   WORLD_OBJECTS,
   TOOLS,
+  GRASS_BITMASK_TABLE,
+  TILLED_BITMASK_TABLE,
 } from "../constants";
+
+const BITMASK_NEIGHBORS = [
+  { dx: -1, dy: -1, value: 1 },
+  { dx: 0, dy: -1, value: 2 },
+  { dx: 1, dy: -1, value: 4 },
+  { dx: -1, dy: 0, value: 8 },
+  { dx: 1, dy: 0, value: 16 },
+  { dx: -1, dy: 1, value: 32 },
+  { dx: 0, dy: 1, value: 64 },
+  { dx: 1, dy: 1, value: 128 },
+];
 
 export class MainGame extends Scene {
   constructor() {
@@ -23,6 +36,7 @@ export class MainGame extends Scene {
   init() {
     // Use this for defining variables
     this.grid = []; // Array to store tile data
+    this.grassTiles = []; // Background grass sprites by grid coordinate
     this.decorations = []; // Separate layer for flexible sprite placement
     this.tileSize = 32;
 
@@ -106,10 +120,13 @@ export class MainGame extends Scene {
           );
         }
 
-        this.add
+        this.grassTiles[y] ??= [];
+        const grass = this.add
           .sprite(posX, posY, TILE_TYPES.GRASS.texture, frameToUse)
           .setScale(2)
           .setDepth(DEPTHS.GRASS);
+        grass.flatFrame = frameToUse;
+        this.grassTiles[y][x] = grass;
       }
     }
 
@@ -132,6 +149,8 @@ export class MainGame extends Scene {
         this.grid[y][x] = new Tile(this, posX, posY, tileType, visualConfig);
       }
     }
+
+    this.refreshTerrainBitmasks();
 
     // Place bin at grid (15, 3)
     const binPixels = getPixelCoords(15, 3, this.tileSize);
@@ -334,7 +353,7 @@ export class MainGame extends Scene {
       duration,
       () => {
         this.handleObjectInteraction(targetX, targetY, tool) ||
-          this.handleTileInteraction(tile, tool);
+          this.handleTileInteraction(tile, tool, targetX, targetY);
       },
       frame,
     );
@@ -364,12 +383,14 @@ export class MainGame extends Scene {
     return false;
   }
 
-  handleTileInteraction(tile, tool) {
+  handleTileInteraction(tile, tool, targetX, targetY) {
     if (!tile) return;
 
     switch (tool) {
       case TOOLS.HOE:
-        tile.till();
+        if (tile.till()) {
+          this.refreshTerrainBitmasksAround(targetX, targetY);
+        }
         break;
 
       case TOOLS.SEEDS:
@@ -380,6 +401,7 @@ export class MainGame extends Scene {
         if (this.water > 0) {
           if (tile.isTilled && !tile.isWatered) {
             tile.water();
+            this.refreshTilledBitmaskAt(targetX, targetY);
             this.water--;
             console.log(`Water left: ${this.water}`);
           }
@@ -391,6 +413,7 @@ export class MainGame extends Scene {
       case TOOLS.SCYTHE:
         const harvested = tile.harvest();
         if (harvested) {
+          this.refreshTilledBitmaskAt(targetX, targetY);
           this.inventory.push(harvested);
           console.log(`Stored ${harvested.cropName} in inventory`);
         }
@@ -410,5 +433,148 @@ export class MainGame extends Scene {
     this.gold += totalGain;
     this.inventory = []; // Clear inventory
     console.log(`Sold shipment for ${totalGain}g! Total Gold: ${this.gold}`);
+  }
+
+  refreshTerrainBitmasks() {
+    for (let y = 0; y < this.grassTiles.length; y++) {
+      const row = this.grassTiles[y];
+      if (!row) continue;
+
+      for (let x = 0; x < row.length; x++) {
+        if (row[x]) {
+          this.refreshGrassBitmaskAt(x, y);
+        }
+      }
+    }
+
+    this.grid.forEach((row, y) => {
+      row?.forEach((tile, x) => {
+        if (tile?.isTilled) {
+          this.refreshTilledBitmaskAt(x, y);
+        }
+      });
+    });
+  }
+
+  refreshTerrainBitmasksAround(centerX, centerY) {
+    for (const { dx, dy } of [{ dx: 0, dy: 0 }, ...BITMASK_NEIGHBORS]) {
+      const x = centerX + dx;
+      const y = centerY + dy;
+
+      this.refreshGrassBitmaskAt(x, y);
+
+      const tile = this.grid[y]?.[x];
+      if (tile?.isTilled) {
+        this.refreshTilledBitmaskAt(x, y);
+      }
+    }
+  }
+
+  refreshGrassBitmaskAt(x, y) {
+    const grass = this.grassTiles[y]?.[x];
+    if (!grass) return;
+
+    const mask = this.getCardinalGatedBitmask(x, y, (neighborX, neighborY) =>
+      this.isGrassLike(neighborX, neighborY),
+    );
+
+    if (mask === 255) {
+      grass.setFrame(grass.flatFrame);
+      return;
+    }
+
+    grass.setFrame(GRASS_BITMASK_TABLE[mask] ?? grass.flatFrame);
+  }
+
+  refreshTilledBitmaskAt(x, y) {
+    const tile = this.grid[y]?.[x];
+    if (!tile?.isTilled) return;
+
+    const mask = this.getCardinalGatedBitmask(x, y, (neighborX, neighborY) =>
+      Boolean(this.grid[neighborY]?.[neighborX]?.isTilled),
+    );
+    const frame = TILLED_BITMASK_TABLE[mask] ?? TILE_TYPES.TILLED.frames.default;
+    if (tile.isWatered) {
+      tile.setTerrainFrame(this.getWateredTilledTextureKey(frame));
+      return;
+    }
+
+    tile.setTerrainFrame(TILE_TYPES.TILLED.texture, frame);
+  }
+
+  getWateredTilledTextureKey(frame) {
+    const key = `tilled-watered-${frame}`;
+    if (this.textures.exists(key)) return key;
+
+    const sourceFrame = this.textures.getFrame(TILE_TYPES.TILLED.texture, frame);
+    const canvas = document.createElement("canvas");
+    canvas.width = sourceFrame.cutWidth;
+    canvas.height = sourceFrame.cutHeight;
+
+    const context = canvas.getContext("2d");
+    context.drawImage(
+      sourceFrame.source.image,
+      sourceFrame.cutX,
+      sourceFrame.cutY,
+      sourceFrame.cutWidth,
+      sourceFrame.cutHeight,
+      0,
+      0,
+      sourceFrame.cutWidth,
+      sourceFrame.cutHeight,
+    );
+
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      if (!this.isTilledSoilPixel(data[i], data[i + 1], data[i + 2], data[i + 3])) {
+        continue;
+      }
+
+      data[i] = Math.floor(data[i] * 0.7);
+      data[i + 1] = Math.floor(data[i + 1] * 0.75);
+      data[i + 2] = Math.floor(data[i + 2] * 0.85);
+    }
+    context.putImageData(imageData, 0, 0);
+
+    const texture = this.textures.addCanvas(key, canvas);
+    texture.refresh();
+
+    return key;
+  }
+
+  isTilledSoilPixel(red, green, blue, alpha) {
+    if (alpha === 0) return false;
+    return red < 160 && red > green && green >= blue;
+  }
+
+  getBitmask(x, y, isMatchingNeighbor) {
+    return BITMASK_NEIGHBORS.reduce((mask, { dx, dy, value }) => {
+      return isMatchingNeighbor(x + dx, y + dy) ? mask + value : mask;
+    }, 0);
+  }
+
+  getCardinalGatedBitmask(x, y, isMatchingNeighbor) {
+    const north = isMatchingNeighbor(x, y - 1);
+    const west = isMatchingNeighbor(x - 1, y);
+    const east = isMatchingNeighbor(x + 1, y);
+    const south = isMatchingNeighbor(x, y + 1);
+
+    let mask = 0;
+    if (north) mask += 2;
+    if (west) mask += 8;
+    if (east) mask += 16;
+    if (south) mask += 64;
+
+    if (north && west && isMatchingNeighbor(x - 1, y - 1)) mask += 1;
+    if (north && east && isMatchingNeighbor(x + 1, y - 1)) mask += 4;
+    if (south && west && isMatchingNeighbor(x - 1, y + 1)) mask += 32;
+    if (south && east && isMatchingNeighbor(x + 1, y + 1)) mask += 128;
+
+    return mask;
+  }
+
+  isGrassLike(x, y) {
+    return !this.grid[y]?.[x];
   }
 }
