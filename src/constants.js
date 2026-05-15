@@ -46,54 +46,55 @@ export const TILE_TYPES = {
 // Bitmask: TL:1, T:2, TR:4, L:8, R:16, BL:32, B:64, BR:128
 // Sum of bitmask corresponds to which of the 8 neighbors are the same type, which determines the tile frame to use
 // Key = sum of bitmask, value = frame index
+// Currently used for grass and tilled tiles, and assumes non-connecting neighbors are plain dirt
 const BASE_BITMASK_PATTERN = {
-  64: 0,
-  80: 1,
-  88: 2,
-  72: 3,
-  91: 4,
+  64: 0, // Touching bottom only, rest touch dirt
+  80: 1, // Bottom and right only
+  88: 2, // Left, bottom, right
+  72: 3, // Left, bottom
+  91: 4, // Top left, bottom, right
   216: 5,
   120: 6,
   94: 7,
   208: 8,
   250: 9,
   248: 10,
-  104: 11,
-  66: 12,
-  82: 13,
-  90: 14,
-  74: 15,
-  210: 16,
-  254: 17,
-  251: 18,
-  106: 19,
-  214: 20,
-  126: 21,
-  123: 23,
-  2: 24,
-  18: 25,
-  26: 26,
-  10: 27,
-  86: 28,
-  223: 29,
-  127: 30,
-  75: 31,
-  222: 32,
-  255: 33,
-  219: 34,
-  107: 35,
-  0: 45, // Default single tile with no connecting neighbors(.py scripts ignored this)
-  16: 37,
-  24: 38,
-  8: 39,
-  122: 40,
-  30: 41,
-  27: 42,
-  218: 43,
-  22: 44,
-  31: 45,
-  95: 46,
-  11: 47,
+  104: 11, // 12-15 aren't part of the 12x4 grid
+  66: 16,
+  82: 17,
+  90: 18,
+  74: 19,
+  210: 20,
+  254: 21,
+  251: 22,
+  106: 23,
+  214: 24,
+  126: 25,
+  123: 27, // same with 28-31
+  2: 32,
+  18: 33,
+  26: 34,
+  10: 35,
+  86: 36,
+  223: 37,
+  127: 38,
+  75: 39,
+  222: 40,
+  255: 41, // pure tile, identical to TILE_TYPES.GRASS.frames.default or TILLED
+  219: 42,
+  107: 43, // same with 44-47
+  0: 48, // Default single tile with no connecting neighbors (.py scripts ignored this) (by no connecting it means all neighbors are dirt so it's a single grass or tilled tile)
+  16: 49,
+  24: 50,
+  8: 51,
+  122: 52,
+  30: 53,
+  27: 54,
+  218: 55,
+  22: 56,
+  31: 57,
+  95: 58,
+  11: 59,
 };
 
 // Helper function to create offset tables
