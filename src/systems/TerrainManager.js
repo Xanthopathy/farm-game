@@ -127,6 +127,20 @@ export class TerrainManager {
   }
 
   /**
+   * Clear watered state from every farm tile at the start of a new day
+   */
+  resetWateredTiles() {
+    this.grid.forEach((row, y) => {
+      row?.forEach((tile, x) => {
+        if (!tile?.isWatered) return;
+
+        tile.isWatered = false;
+        this.refreshTilledBitmaskAt(x, y);
+      });
+    });
+  }
+
+  /**
    * Return the farm-grid tile at the given logical grid coordinate.
    */
   getTile(gridX, gridY) {

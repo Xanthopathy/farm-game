@@ -327,6 +327,11 @@ export class MainGame extends Scene {
    */
   endDay() {
     const result = this.state.endDay();
+
+    if (result.success) {
+      this.terrain.resetWateredTiles();
+    }
+
     console.log(result.message);
     if (result.nextDayMessage) {
       console.log(result.nextDayMessage);
