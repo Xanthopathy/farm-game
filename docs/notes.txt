@@ -1,17 +1,76 @@
 [DONE] Add small delay between each action
-[DONE] Have the targeted tile (not the coords the player is exactly on) to be shifted by 1 tile in whatever direction it's facing
-[ ] Come up with a gaming loop
-[ ] Maybe add different layers of water for bucket to indicate water level for well refill
-[ ] Implement day timer (60s countdown, display on screen)
-[ ] Add end-of-day trigger (auto or key press)
-[ ] Auto-harvest ripe crops at day end
-[ ] Reset water/growth states for new day
-[ ] Add day counter + gold tracking
-[ ] Test full loop: plant → grow → harvest → sell → next day
+[DONE] Have the targeted tile shift by 1 tile in the player's facing direction
 
+CORE LOOP GOAL
+Make each day ask a small strategic question:
+Buy/receive seeds -> choose what to plant -> spend limited time/water -> harvest/ship -> pay quota -> use surplus for upgrades -> start a harder but more rewarding day
+
+MUST-FIX LOOP CHECKLIST
+[ ] Decide the day-end shipping rule
+    Option A: Auto-sell harvested inventory at day end so effort always counts
+    Option B: Manual bin shipping gives a bonus, but inventory still sells at base value
+[ ] Track today's shipped value separately from total gold
+[ ] Make quota check use shipped value or revenue for the day, not just current wallet gold
+[ ] Reset tile watered states at the start of each new day
+[ ] Stop crops from growing forever from one watering
+[ ] Show clear on-screen feedback for failed actions
+    Examples: "Needs tilled soil", "Already watered", "Out of water", "Crop not ready"
+[ ] Add a visible "day ending soon" warning in the last 10 seconds
+[ ] Add crop-ready feedback
+    Examples: sparkle, bounce, tint, or small harvest prompt
+
+FIRST FUN PASS
+[ ] Add seed limits or seed cost so planting has a choice/cost
+[ ] Add at least 2 crop types with different tradeoffs
+    Fast/cheap crop: lower profit, reliable quota help
+    Slow/valuable crop: higher profit, riskier timing
+[ ] Add a simple shop or between-day upgrade menu
+[ ] Add first upgrade: bigger bucket capacity
+[ ] Add second upgrade: faster tool actions or faster movement
+[ ] Let surplus gold matter after quota payment
+[ ] Add a small win target
+    Example: survive 5 days or earn 500g total
+
+IMPLEMENTATION ORDER
+[ ] End-of-day resolution
+    [ ] Auto-sell or base-sell inventory
+    [ ] Pay quota
+    [ ] Show day result message
+    [ ] Advance day
+    [ ] Reset water bucket
+    [ ] Reset watered tiles
+[ ] Better UI
+    [ ] Day/time/quota/gold layout
+    [ ] Today's shipped value
+    [ ] Current tool icon
+    [ ] Water meter
+    [ ] Temporary action messages
+[ ] Economy
+    [ ] Add seed count or seed price
+    [ ] Add crop definitions for fast/slow crop
+    [ ] Add sell values and growth times tuned around 60s days
+[ ] Upgrades
+    [ ] Bucket capacity upgrade
+    [ ] Tool speed upgrade
+    [ ] Optional field expansion upgrade
+[ ] Balance test
+    [ ] Day 1 should be easy if the player understands the loop
+    [ ] Day 2 should require decent execution
+    [ ] Day 3 should require either planning or an upgrade
+    [ ] Failing should feel like "I know what I would do better next time"
+
+POLISH IDEAS
+[ ] Maybe add different water layers for bucket to indicate water level
+[ ] Add hover/target tile highlight
+[ ] Add small sell animation or gold popup at shipping bin
+[ ] Add sound effects for till, water, plant, harvest, sell, quota paid
+[ ] Add subtle crop growth pop when a crop advances stage
+
+ASSET NOTES
 Kenney.nl: Often called the "Gold Standard" of free assets. Everything is CC0, meaning you can use it for anything without even giving credit. Look for his "Pixel" or "RPG" packs.
 Itch.io (Free Assets): This is a goldmine. Thousands of indie artists post free packs here. You can filter specifically for "Top-down" and "Pixel Art."
 OpenGameArt.org: An older but massive community-driven site. You can find everything from character sprite sheets to environment tilesets.
 CraftPix (Freebies Section): They have high-quality "Top-down" tilesets (grass, paths, towns) that would work perfectly for a Firebase multiplayer map.
 
-If you ever need camera offsets or viewport panning in the future, you'd use Phaser's camera system instead of hardcoding offsets everywhere.
+TECH NOTE
+If you ever need camera offsets or viewport panning in the future, use Phaser's camera system instead of hardcoding offsets everywhere.
