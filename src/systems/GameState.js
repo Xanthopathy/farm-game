@@ -31,12 +31,12 @@ export class GameState {
    * Resolve the quota payment and either advance the day or end the run.
    */
   endDay() {
-    if (this.gold < this.quota) {
+    if (this.todayShippedValue < this.quota) {
       this.gameOver = true;
       this.isDayActive = false;
       return {
         success: false,
-        message: `Failed to pay quota! Needed ${this.quota}g, had ${this.gold}g. Game Over!`,
+        message: `Failed to pay quota! Needed ${this.quota}g shipped today, shipped ${this.todayShippedValue}g. Game Over!`,
       };
     }
 
@@ -46,6 +46,7 @@ export class GameState {
     this.day++;
     this.dayTimer = 0;
     this.water = this.maxWater;
+    this.todayShippedValue = 0;
     this.isDayActive = true;
 
     return {

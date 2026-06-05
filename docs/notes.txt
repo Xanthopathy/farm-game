@@ -10,7 +10,7 @@ MUST-FIX LOOP CHECKLIST
     Rules: 
     + Auto-sell harvested inventory at day end so effort always counts.
     + Manual bin shipping can give a small bonus.
-[ ] Track today's shipped value separately from total gold
+[X] Track today's shipped value separately from total gold
 [ ] Make quota check use shipped value or revenue for the day, not just current wallet gold
 [ ] Reset tile watered states at the start of each new day
 [ ] Stop crops from growing forever from one watering
