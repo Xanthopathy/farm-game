@@ -29,12 +29,13 @@ export class UIDisplay {
     const goldCount = game.gold;
     const waterCount = game.water;
     const inventoryCount = game.inventory.length;
+    const shippedToday = game.todayShippedValue;
     const dayInfo = game.gameOver
       ? `GAME OVER - Day: ${game.day}\nFailed quota: ${game.quota}g`
       : `Day: ${game.day} | Time: ${Math.ceil((game.dayTime - game.dayTimer) / 1000)}s\nQuota: ${game.quota}g`;
 
     this.uiText.setText(
-      `${dayInfo} | Gold: ${goldCount}g\nWater: ${waterCount}/${game.maxWater}\nTool: ${toolName}\nHarvested: ${inventoryCount}`,
+      `${dayInfo} | Gold: ${goldCount}g\nShipped Today: ${shippedToday}g\nWater: ${waterCount}/${game.maxWater}\nTool: ${toolName}\nHarvested: ${inventoryCount}`,
     );
 
     if (player.currentTool.texture) {

@@ -7,6 +7,7 @@ export class GameState {
     this.water = 10;
     this.maxWater = 10;
     this.inventory = [];
+    this.todayShippedValue = 0;
 
     this.day = DAY_SETTINGS.startingDay;
     this.dayTime = DAY_SETTINGS.dayTime;
@@ -87,6 +88,7 @@ export class GameState {
       0,
     );
     this.gold += totalGain;
+    this.todayShippedValue += totalGain;
     this.inventory = [];
     return totalGain;
   }

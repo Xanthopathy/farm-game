@@ -1,14 +1,15 @@
-[DONE] Add small delay between each action
-[DONE] Have the targeted tile shift by 1 tile in the player's facing direction
+[X] Add small delay between each action
+[X] Have the targeted tile shift by 1 tile in the player's facing direction
 
 CORE LOOP GOAL
 Make each day ask a small strategic question:
 Buy/receive seeds -> choose what to plant -> spend limited time/water -> harvest/ship -> pay quota -> use surplus for upgrades -> start a harder but more rewarding day
 
 MUST-FIX LOOP CHECKLIST
-[ ] Decide the day-end shipping rule
-    Option A: Auto-sell harvested inventory at day end so effort always counts
-    Option B: Manual bin shipping gives a bonus, but inventory still sells at base value
+[X] Decide the day-end shipping rule
+    Rules: 
+    + Auto-sell harvested inventory at day end so effort always counts.
+    + Manual bin shipping can give a small bonus.
 [ ] Track today's shipped value separately from total gold
 [ ] Make quota check use shipped value or revenue for the day, not just current wallet gold
 [ ] Reset tile watered states at the start of each new day
