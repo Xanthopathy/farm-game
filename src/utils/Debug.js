@@ -1,12 +1,15 @@
 // src/utils/Debug.js
 import { getGridCoords, getPixelCoords } from "./GridMath";
 
+const TOP_RIGHT_MARGIN = 10;
+const STACK_GAP = 8;
+
 export class DebugDisplay {
   constructor(scene) {
     this.scene = scene;
     this.graphics = scene.add.graphics().setDepth(1000);
     this.debugText = scene.add
-      .text(790, 10, "", {
+      .text(scene.scale.width - TOP_RIGHT_MARGIN, TOP_RIGHT_MARGIN, "", {
         fontSize: "16px",
         color: "#ffffff",
         backgroundColor: "#000000aa",
@@ -79,5 +82,13 @@ export class DebugDisplay {
       this.graphics.fillStyle(0x00ffff, 1); // Cyan for high visibility
       this.graphics.fillRect(player.x, player.y, 1, 1);
     }
+  }
+
+  getTopRightStackBottom() {
+    if (!this.debugText.visible) {
+      return TOP_RIGHT_MARGIN;
+    }
+
+    return this.debugText.y + this.debugText.height + STACK_GAP;
   }
 }

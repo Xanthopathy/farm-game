@@ -1,6 +1,8 @@
 // src/utils/UIDisplay.js
 import { TOOLS } from "../constants";
 
+const TOP_RIGHT_MARGIN = 10;
+
 export class UIDisplay {
   constructor(scene) {
     this.scene = scene;
@@ -24,20 +26,21 @@ export class UIDisplay {
       .setDepth(1000);
 
     this.messageText = this.scene.add
-      .text(10, 120, "", {
+      .text(scene.scale.width - TOP_RIGHT_MARGIN, TOP_RIGHT_MARGIN, "", {
         fontSize: "16px",
         color: "#ffff88",
         backgroundColor: "#000000aa",
         padding: { x: 5, y: 5 },
       })
-      .setOrigin(0, 0)
+      .setOrigin(1, 0)
       .setScrollFactor(0)
-      .setDepth(1000);
+      .setDepth(1000)
+      .setVisible(false);
 
     this.messageTimer = null;
   }
 
-  update(player, game) {
+  update(player, game, debugDisplay = null) {
     const toolName = player.currentTool.label;
     const goldCount = game.gold;
     const waterCount = game.water;
@@ -61,10 +64,13 @@ export class UIDisplay {
     } else {
       this.toolIcon.setVisible(false);
     }
+
+    this.positionMessage(debugDisplay);
   }
 
   showMessage(message) {
     this.messageText.setText(message);
+    this.messageText.setVisible(true);
 
     if (this.messageTimer) {
       this.messageTimer.remove();
@@ -72,7 +78,17 @@ export class UIDisplay {
 
     this.messageTimer = this.scene.time.delayedCall(1500, () => {
       this.messageText.setText("");
+      this.messageText.setVisible(false);
       this.messageTimer = null;
     });
+  }
+
+  positionMessage(debugDisplay) {
+    const stackY = debugDisplay?.getTopRightStackBottom() ?? TOP_RIGHT_MARGIN;
+
+    this.messageText.setPosition(
+      this.scene.scale.width - TOP_RIGHT_MARGIN,
+      stackY,
+    );
   }
 }

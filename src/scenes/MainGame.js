@@ -138,7 +138,7 @@ export class MainGame extends Scene {
       this.targetX,
       this.targetY,
     );
-    this.uiDisplay.update(this.player, this.state);
+    this.uiDisplay.update(this.player, this.state, this.debugDisplay);
   }
 
   /**
