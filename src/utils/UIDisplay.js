@@ -22,6 +22,19 @@ export class UIDisplay {
       .setOrigin(0)
       .setScrollFactor(0)
       .setDepth(1000);
+
+    this.messageText = this.scene.add
+      .text(10, 120, "", {
+        fontSize: "16px",
+        color: "#ffff88",
+        backgroundColor: "#000000aa",
+        padding: { x: 5, y: 5 },
+      })
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
+      .setDepth(1000);
+
+    this.messageTimer = null;
   }
 
   update(player, game) {
@@ -48,5 +61,18 @@ export class UIDisplay {
     } else {
       this.toolIcon.setVisible(false);
     }
+  }
+
+  showMessage(message) {
+    this.messageText.setText(message);
+
+    if (this.messageTimer) {
+      this.messageTimer.remove();
+    }
+
+    this.messageTimer = this.scene.time.delayedCall(1500, () => {
+      this.messageText.setText("");
+      this.messageTimer = null;
+    });
   }
 }

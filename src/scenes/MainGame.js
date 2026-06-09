@@ -252,17 +252,24 @@ export class MainGame extends Scene {
    * Apply the selected tool's behavior to a farm-grid tile.
    */
   handleTileInteraction(tile, tool, target) {
-    if (!tile) return;
+    if (!tile) {
+      this.uiDisplay.showMessage("Nothing to use that on");
+      return;
+    }
 
     switch (tool) {
       case TOOLS.HOE:
         if (tile.till()) {
           this.terrain.refreshTerrainBitmasksAround(target.x, target.y);
+        } else {
+          this.uiDisplay.showMessage("Needs untilled dirt");
         }
         break;
 
       case TOOLS.SEEDS:
-        tile.plant(CROP_TYPES.CORN);
+        if (!tile.plant(CROP_TYPES.CORN)) {
+          this.uiDisplay.showMessage("Needs empty tilled soil");
+        }
         break;
 
       case TOOLS.BUCKET:
@@ -274,7 +281,7 @@ export class MainGame extends Scene {
         break;
 
       default:
-        console.log("No tool equipped!");
+        this.uiDisplay.showMessage("No tool equipped!");
     }
   }
 
@@ -283,11 +290,19 @@ export class MainGame extends Scene {
    */
   waterTile(tile, target) {
     if (this.state.water <= 0) {
-      console.log("Out of water!");
+      this.uiDisplay.showMessage("Out of water");
       return;
     }
 
-    if (!tile.isTilled || tile.isWatered) return;
+    if (!tile.isTilled) {
+      this.uiDisplay.showMessage("Needs tilled soil");
+      return;
+    }
+
+    if (tile.isWatered) {
+      this.uiDisplay.showMessage("Already watered");
+      return;
+    }
 
     tile.water();
     this.terrain.refreshTilledBitmaskAt(target.x, target.y);
@@ -300,7 +315,10 @@ export class MainGame extends Scene {
    */
   harvestTile(tile, target) {
     const harvested = tile.harvest();
-    if (!harvested) return;
+    if (!harvested) {
+      this.uiDisplay.showMessage("Crop not ready");
+      return;
+    }
 
     this.terrain.refreshTilledBitmaskAt(target.x, target.y);
     this.state.storeHarvest(harvested);
