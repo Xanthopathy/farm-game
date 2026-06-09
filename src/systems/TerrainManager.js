@@ -121,7 +121,12 @@ export class TerrainManager {
   updateCrops(delta) {
     this.grid.forEach((row) => {
       row?.forEach((tile) => {
-        tile.crop?.update(delta, tile.isWatered);
+        const didGrow = tile.crop?.update(delta, tile.isWatered);
+
+        if (didGrow) {
+          tile.isWatered = false;
+          this.refreshTilledBitmaskAt(x, y);
+        }
       });
     });
   }

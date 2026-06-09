@@ -31,7 +31,7 @@ export class Crop {
   }
 
   update(delta, isWatered) {
-    if (this.isMature) return;
+    if (this.isMature) return false;
 
     // Only grow if the tile underneath is watered
     if (isWatered) {
@@ -40,8 +40,10 @@ export class Crop {
       if (this.timer >= this.type.growthTime) {
         this.advanceStage();
         this.timer = 0;
+        return true;
       }
     }
+    return false;
   }
 
   advanceStage() {
