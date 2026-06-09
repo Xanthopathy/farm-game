@@ -215,7 +215,6 @@ export class Player extends Phaser.GameObjects.Sprite {
     const clampedIndex = Phaser.Math.Wrap(index, 0, this.toolOrder.length);
     this.selectedToolIndex = clampedIndex;
     this.currentTool = this.toolOrder[this.selectedToolIndex];
-    console.log(`Equipped: ${this.currentTool.label}`);
   }
 
   cycleTool(direction) {

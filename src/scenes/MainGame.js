@@ -236,7 +236,9 @@ export class MainGame extends Scene {
   handleObjectInteraction(target, tool) {
     if (this.isWellTarget(target) && tool === TOOLS.BUCKET) {
       this.state.refillWater();
-      console.log(`Water refilled: ${this.state.water}/${this.state.maxWater}`);
+      this.uiDisplay.showMessage(
+        `Water refilled: ${this.state.water}/${this.state.maxWater}`,
+      );
       return true;
     }
 
@@ -307,7 +309,7 @@ export class MainGame extends Scene {
     tile.water();
     this.terrain.refreshTilledBitmaskAt(target.x, target.y);
     this.state.spendWater();
-    console.log(`Water left: ${this.state.water}`);
+    this.uiDisplay.showMessage(`Water left: ${this.state.water}`);
   }
 
   /**
@@ -322,7 +324,7 @@ export class MainGame extends Scene {
 
     this.terrain.refreshTilledBitmaskAt(target.x, target.y);
     this.state.storeHarvest(harvested);
-    console.log(`Stored ${harvested.cropName} in inventory`);
+    this.uiDisplay.showMessage(`Stored ${harvested.cropName} in inventory`);
   }
 
   /**
@@ -330,12 +332,12 @@ export class MainGame extends Scene {
    */
   sellCrops() {
     if (this.state.inventory.length === 0) {
-      console.log("Inventory empty!");
+      this.uiDisplay.showMessage("Inventory empty!");
       return;
     }
 
     const totalGain = this.state.sellInventory();
-    console.log(
+    this.uiDisplay.showMessage(
       `Sold shipment for ${totalGain}g! Total Gold: ${this.state.gold}`,
     );
   }
@@ -350,9 +352,11 @@ export class MainGame extends Scene {
       this.terrain.resetWateredTiles();
     }
 
-    console.log(result.message);
+    this.uiDisplay.showMessage(result.message);
     if (result.nextDayMessage) {
-      console.log(result.nextDayMessage);
+      this.time.delayedCall(1600, () => {
+        this.uiDisplay.showMessage(result.nextDayMessage);
+      });
     }
   }
 

@@ -28,9 +28,7 @@ export class Tile {
       visualConfig.variationChance &&
       Math.random() < visualConfig.variationChance
     ) {
-      frameToUse = Phaser.Utils.Array.GetRandom(
-        visualConfig.frames.variations,
-      );
+      frameToUse = Phaser.Utils.Array.GetRandom(visualConfig.frames.variations);
     }
 
     // Create the visual representation
@@ -63,8 +61,6 @@ export class Tile {
       );
 
       this.squishFX();
-
-      console.log("Tile tilled!");
       return true;
     }
     return false;
@@ -98,13 +94,9 @@ export class Tile {
         this.crop.sprites.top.destroy();
       }
       this.crop = null;
-
       // Reset tile state (back to tilled)
       this.isWatered = false;
-
       this.squishFX();
-
-      console.log(`Harvested ${cropName}!`);
       return { cropName, sellValue };
     }
     return null;
