@@ -17,7 +17,7 @@ export class UIDisplay {
       .setDepth(1000);
 
     this.toolIcon = scene.add
-      .sprite(170, 50, "tiny_town", 0)
+      .sprite(170, 70, "tiny_town", 0)
       .setScale(2)
       .setOrigin(0)
       .setScrollFactor(0)

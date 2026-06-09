@@ -1,7 +1,7 @@
 {
   "name": "farm-game",
   "scripts": {
-    "start": "vite"
+    "dev": "vite"
   },
   "dependencies": {
     "phaser": "^4.0.0"
