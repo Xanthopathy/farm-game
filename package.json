@@ -1,7 +1,8 @@
 {
   "name": "farm-game",
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "balance": "node scripts/simulate_balance.mjs"
   },
   "dependencies": {
     "phaser": "^4.0.0"

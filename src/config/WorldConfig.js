@@ -19,8 +19,8 @@ export const WORLD_OBJECT_POSITIONS = {
 export const DAY_SETTINGS = {
   startingDay: 1,
   dayTime: 60000,
-  startingQuota: 50,
-  quotaIncrease: 50,
+  startingQuota: 40,
+  quotaIncrease: 30,
 };
 
 export const PLAYER_SPEED = {

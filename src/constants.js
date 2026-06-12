@@ -150,8 +150,9 @@ export const CROP_TYPES = {
       { bottom: 118, top: 102 }, // Stage 5
       { bottom: 119, top: 103 }, // Stage 6 (Harvestable)
     ],
-    growthTime: 3000,
-    sellValue: 3,
+    growthTime: 2500,
+    seedCost: 3,
+    sellValue: 8,
   },
   CORN: {
     name: "Corn",
@@ -165,8 +166,9 @@ export const CROP_TYPES = {
       { bottom: 30, top: 14 }, // Stage 4
       { bottom: 31, top: 15 }, // Stage 5 (Harvestable)
     ],
-    growthTime: 5000,
-    sellValue: 10,
+    growthTime: 4500,
+    seedCost: 6,
+    sellValue: 15,
   },
   TURNIP: {
     name: "Turnip",
@@ -179,8 +181,9 @@ export const CROP_TYPES = {
       61, // Stage 3
       { bottom: 62, top: 46 }, // Stage 4 (Harvestable)
     ],
-    growthTime: 2500,
-    sellValue: 5,
+    growthTime: 2000,
+    seedCost: 2,
+    sellValue: 6,
   },
   PUMPKIN: {
     name: "Pumpkin",
@@ -195,7 +198,8 @@ export const CROP_TYPES = {
       { bottom: 95, top: 79 }, // Stage 5 (Harvestable)
     ],
     growthTime: 7000,
-    sellValue: 18,
+    seedCost: 10,
+    sellValue: 26,
   },
   GARLIC: {
     name: "Garlic",
@@ -209,7 +213,8 @@ export const CROP_TYPES = {
       { bottom: 126, top: 110 }, // Stage 4 (Harvestable)
     ],
     growthTime: 4000,
-    sellValue: 8,
+    seedCost: 5,
+    sellValue: 12,
   },
 };
 

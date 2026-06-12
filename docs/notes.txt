@@ -5,6 +5,93 @@ CORE LOOP GOAL
 Make each day ask a small strategic question:
 Buy/receive seeds -> choose what to plant -> spend limited time/water -> harvest/ship -> pay quota -> use surplus for upgrades -> start a harder but more rewarding day
 
+BALANCE DRAFT
+Current core rules:
++ Day length: 60s
++ Tool action delay: 1.5s per action
++ Basic crop action cost: till + plant + water + harvest = 4 actions = 6s, before walking/refilling
++ Bucket capacity: 10 water
++ Water rule: watered tiles stay watered until harvest or new day
++ Day reset: bucket refills, watered tiles dry
++ Crop persistence: planted crops linger across days if not harvested
++ Quota check: based on today's shipped value, not wallet gold
++ Starting quota: 40g
++ Quota increase: +30g per day
++ Starting gold: 0g
++ Starter seeds: 10 turnip seeds
++ Unsold harvested inventory auto-sells at day end so effort counts
++ Field crops are never auto-harvested
++ Planted crops persist across days until manually harvested
++ Mature crops stay mature until harvested
++ Future rule: manual bin shipping can give a small bonus
+
+Balance implications:
++ Sell value is gross quota progress, not pure profit once seed costs exist
++ Profit should be sellValue - seedCost
++ High sell value crops help quota even if seed cost is high
++ Slow crops are less risky than they look because they can finish tomorrow, but they still tie up tile space and delay today's quota
++ Fast crops should be useful rescue crops, not the best long-term profit
++ Expensive/slow crops should reward early planning and surplus gold
++ Water is currently equal across crops because every crop needs only one watering
++ If crops later need multiple watering, slow crops become much riskier
+
+Draft global numbers:
++ dayTime: 60000
++ actionDelay: 1500
++ startingQuota: 40
++ quotaIncrease: 30
++ startingGold: 0
++ startingSeeds: 10 turnip seeds
++ startingWater/maxWater: 10
++ manualShippingBonus: future 10-25%
+
+Draft crop numbers:
++ Turnip
+    Role: fast rescue crop
+    Stages: 5 total, 4 growth steps
+    growthTime: 2000 per step, 8s total
+    seedCost: 2g
+    sellValue: 6g
+    profit: 4g
++ Wheat
+    Role: cheap reliable baseline
+    Stages: 7 total, 6 growth steps
+    growthTime: 2500 per step, 15s total
+    seedCost: 3g
+    sellValue: 8g
+    profit: 5g
++ Garlic
+    Role: efficient mid crop
+    Stages: 5 total, 4 growth steps
+    growthTime: 4000 per step, 16s total
+    seedCost: 5g
+    sellValue: 12g
+    profit: 7g
++ Corn
+    Role: standard money crop
+    Stages: 6 total, 5 growth steps
+    growthTime: 4500 per step, 22.5s total
+    seedCost: 6g
+    sellValue: 15g
+    profit: 9g
++ Pumpkin
+    Role: slow risky quota bomb
+    Stages: 6 total, 5 growth steps
+    growthTime: 7000 per step, 35s total
+    seedCost: 10g
+    sellValue: 26g
+    profit: 16g
+
+Balance questions to test:
++ Can Day 1 quota be hit with turnips/wheat without perfect movement?
++ Does corn feel better than wheat if planted early enough?
++ Does pumpkin feel exciting without becoming mandatory?
++ Does +30g quota scaling still force one correct crop too quickly?
++ Should quota scaling be fixed (+50g), percentage-based, or milestone-based?
++ Should crops that linger across days count as planning, or does it make slow crops too safe?
++ Should starter turnip seeds be consumed before bought seeds?
++ Should quota payment require both shipped value and enough wallet gold after seed spending?
+
 MUST-FIX LOOP CHECKLIST
 [X] Decide the day-end shipping rule
     Rules: 
@@ -22,7 +109,7 @@ MUST-FIX LOOP CHECKLIST
 
 FIRST FUN PASS
 [ ] Add seed limits or seed cost so planting has a choice/cost
-[ ] Add at least 2 crop types with different tradeoffs
+[X] Add at least 2 crop types with different tradeoffs
     Fast/cheap crop: lower profit, reliable quota help
     Slow/valuable crop: higher profit, riskier timing
 [ ] Add Q and E for seed rotation back and forth
@@ -35,7 +122,7 @@ FIRST FUN PASS
 
 IMPLEMENTATION ORDER
 [ ] End-of-day resolution
-    [ ] Auto-sell or base-sell inventory
+    [ ] Auto-sell harvested inventory at day end (Do not auto-harvest field crops)
     [ ] Pay quota
     [ ] Show day result message
     [ ] Advance day
