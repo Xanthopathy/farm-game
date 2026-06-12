@@ -89,11 +89,9 @@ export class Tile {
       const sellValue = this.crop.type.sellValue;
 
       // Destroy crop sprites
-      this.crop.sprites.bottom.destroy();
-      if (this.crop.sprites.top) {
-        this.crop.sprites.top.destroy();
-      }
+      this.crop.destroy();
       this.crop = null;
+
       // Reset tile state (back to tilled)
       this.isWatered = false;
       this.squishFX();

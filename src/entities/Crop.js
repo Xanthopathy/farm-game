@@ -11,6 +11,7 @@ export class Crop {
     this.growthStage = 0;
     this.isMature = false;
     this.timer = 0;
+    this.readyTween = null;
 
     // Create dynamic stack for bottom/top sprite management
     this.sprites = createDynamicStack(
@@ -62,6 +63,37 @@ export class Crop {
 
     if (this.growthStage >= this.type.frames.length - 1) {
       this.isMature = true;
+      this.startReadyFeedback();
+    }
+  }
+
+  startReadyFeedback() {
+    if (this.readyTween) return;
+
+    const targets = [this.sprites.bottom];
+    if (this.sprites.top) {
+      targets.push(this.sprites.top);
+    }
+
+    this.readyTween = this.scene.tweens.add({
+      targets,
+      y: "-=3",
+      duration: 450,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.inOut",
+    });
+  }
+
+  destroy() {
+    if (this.readyTween) {
+      this.readyTween.stop();
+      this.readyTween = null;
+    }
+
+    this.sprites.bottom.destroy();
+    if (this.sprites.top) {
+      this.sprites.top.destroy();
     }
   }
 }
