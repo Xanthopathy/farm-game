@@ -18,12 +18,14 @@ MUST-FIX LOOP CHECKLIST
 [X] Add a visible "day ending soon" warning in the last 10 seconds
 [X] Add crop-ready feedback
     Examples: sparkle, bounce, tint, or small harvest prompt
+[ ] Add R for Restart (only active when game is over)
 
 FIRST FUN PASS
 [ ] Add seed limits or seed cost so planting has a choice/cost
 [ ] Add at least 2 crop types with different tradeoffs
     Fast/cheap crop: lower profit, reliable quota help
     Slow/valuable crop: higher profit, riskier timing
+[ ] Add Q and E for seed rotation back and forth
 [ ] Add a simple shop or between-day upgrade menu
 [ ] Add first upgrade: bigger bucket capacity
 [ ] Add second upgrade: faster tool actions or faster movement

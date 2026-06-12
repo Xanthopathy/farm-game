@@ -138,13 +138,13 @@ export const CROP_TYPES = {
   WHEAT: {
     name: "Wheat",
     frames: [
-      113, // Stage 0 - bottom only
-      114, // Stage 1 - bottom only
-      115, // Stage 2 - bottom only
-      { bottom: 116, top: 100 }, // Stage 3 - bottom + top
-      { bottom: 117, top: 101 }, // Stage 4 - bottom + top
-      { bottom: 118, top: 102 }, // Stage 5 - bottom + top
-      { bottom: 119, top: 103 }, // Stage 6 - bottom + top
+      113, // Stage 0
+      114, // Stage 1
+      115, // Stage 2
+      { bottom: 116, top: 100 }, // Stage 3
+      { bottom: 117, top: 101 }, // Stage 4
+      { bottom: 118, top: 102 }, // Stage 5
+      { bottom: 119, top: 103 }, // Stage 6 (Harvestable)
     ],
     growthTime: 3000,
     sellValue: 3,
@@ -152,15 +152,50 @@ export const CROP_TYPES = {
   CORN: {
     name: "Corn",
     frames: [
-      26, // Stage 0 (Seed) - bottom only
-      27, // Stage 1 - bottom only
-      { bottom: 28, top: 12 }, // Stage 2 - bottom only + top
-      { bottom: 29, top: 13 }, // Stage 3 - bottom + top
-      { bottom: 30, top: 14 }, // Stage 4 - bottom + top
-      { bottom: 31, top: 15 }, // Stage 5 - bottom + top
+      26, // Stage 0 (Seed)
+      27, // Stage 1
+      { bottom: 28, top: 12 }, // Stage 2
+      { bottom: 29, top: 13 }, // Stage 3
+      { bottom: 30, top: 14 }, // Stage 4
+      { bottom: 31, top: 15 }, // Stage 5 (Harvestable)
     ],
     growthTime: 5000,
     sellValue: 10,
+  },
+  TURNIP: {
+    name: "Turnip",
+    frames: [
+      58, // Stage 0 (Seed)
+      59, // Stage 1
+      60, // Stage 2
+      61, // Stage 3
+      { bottom: 62, top: 46 }, // Stage 4 (Harvestable)
+    ],
+    growthTime: 0,
+    sellValue: 0,
+  },
+  PUMPKIN: {
+    name: "Pumpkin",
+    frames: [
+      90, // Stage 0 (Seed)
+      91, // Stage 1
+      92, // Stage 2
+      { bottom: 93, top: 77 }, // Stage 3
+      { bottom: 94, top: 78 }, // Stage 4
+      { bottom: 95, top: 79 }, // Stage 5 (Harvestable)
+    ],
+    growthTime: 0,
+    sellValue: 0,
+  },
+  GARLIC: {
+    name: "Garlic",
+    frames: [
+      122, // Stage 0 (Seed)
+      123, // Stage 1
+      124, // Stage 2
+      125, // Stage 3
+      { bottom: 126, top: 110 }, // Stage 4 (Harvestable)
+    ],
   },
 };
 
@@ -199,3 +234,19 @@ export const TOOLS = {
     frames: { default: 129 },
   },
 };
+
+/* Harvested crop seed packet index: (all in objects)
+wheat: 96
+corn: 24
+turnip: 56
+pumpkin: 88
+garlic: 120
+*/
+
+/* Harvested crop produce index: (all in objects) (I suppose we display in inventory HUD)
+wheat: 112
+corn: 25
+turnip: 57
+pumpkin: 89
+garlic: 121
+*/
