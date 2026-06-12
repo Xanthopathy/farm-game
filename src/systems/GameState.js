@@ -1,5 +1,6 @@
 // src/systems/GameState.js
 import { DAY_SETTINGS } from "../config/WorldConfig";
+import { CROP_TYPES } from "../constants";
 
 export class GameState {
   constructor() {
@@ -15,6 +16,10 @@ export class GameState {
     this.isDayActive = true;
     this.quota = DAY_SETTINGS.startingQuota;
     this.gameOver = false;
+
+    this.cropOrder = Object.keys(CROP_TYPES);
+    this.selectedCropIndex = this.cropOrder.indexOf("CORN");
+    this.selectedCropKey = this.cropOrder[this.selectedCropIndex];
   }
 
   /**
@@ -71,6 +76,18 @@ export class GameState {
 
     this.water--;
     return true;
+  }
+
+  /**
+   *
+   * @param {*} direction
+   */
+  cycleSelectedCrop(direction) {
+    this.selectedCropIndex =
+      (this.selectedCropIndex + direction + this.cropOrder.length) %
+      this.cropOrder.length;
+
+    this.selectedCropKey = this.cropOrder[this.selectedCropIndex];
   }
 
   /**

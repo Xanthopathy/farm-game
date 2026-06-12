@@ -69,6 +69,7 @@ export class MainGame extends Scene {
     this.shift = this.input.keyboard.addKey(KeyCodes.SHIFT);
     this.gKey = this.input.keyboard.addKey(KeyCodes.G);
     this.bKey = this.input.keyboard.addKey(KeyCodes.B);
+    this.rKey = this.input.keyboard.addKey(KeyCodes.R);
 
     this.input.on("pointerdown", (pointer) => {
       if (pointer.leftButtonDown()) {
@@ -168,6 +169,13 @@ export class MainGame extends Scene {
 
     if (Phaser.Input.Keyboard.JustDown(this.bKey)) {
       this.showDebugText = !this.showDebugText;
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.rKey)) {
+      this.state.cycleSelectedCrop(1);
+      this.uiDisplay.showMessage(
+        `Selected seeds: ${CROP_TYPES[this.state.selectedCropKey].name}`,
+      );
     }
   }
 
@@ -272,7 +280,9 @@ export class MainGame extends Scene {
         break;
 
       case TOOLS.SEEDS:
-        if (!tile.plant(CROP_TYPES.CORN)) {
+        const cropType = CROP_TYPES[this.state.selectedCropKey];
+
+        if (!tile.plant(cropType)) {
           this.uiDisplay.showMessage("Needs empty tilled soil");
         }
         break;

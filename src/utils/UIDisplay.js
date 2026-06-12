@@ -1,5 +1,5 @@
 // src/utils/UIDisplay.js
-import { TOOLS } from "../constants";
+import { CROP_TYPES, TOOLS } from "../constants";
 
 const TOP_RIGHT_MARGIN = 10;
 
@@ -41,7 +41,10 @@ export class UIDisplay {
   }
 
   update(player, game, debugDisplay = null) {
-    const toolName = player.currentTool.label;
+    const toolName =
+      player.currentTool.label === TOOLS.SEEDS
+        ? `Seeds: ${CROP_TYPES[game.selectedCropKey].name}`
+        : player.currentTool.label;
     const goldCount = game.gold;
     const waterCount = game.water;
     const inventoryCount = game.inventory.length;
