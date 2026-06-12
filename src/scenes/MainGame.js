@@ -29,6 +29,8 @@ export class MainGame extends Scene {
     this.targetX = PLAYER_START.gridX;
     this.targetY = PLAYER_START.gridY + 1;
 
+    this.hasShownDayEndingWarning = false;
+
     this.debugDisplay = null;
     this.uiDisplay = null;
     this.showDebugGrid = false;
@@ -124,6 +126,7 @@ export class MainGame extends Scene {
       this.terrain.updateCrops(delta);
       this.handleKeyboardActions();
       this.calculateTargetCoordinates();
+      this.showDayEndingWarning();
 
       if (this.state.updateDay(delta)) {
         this.endDay();
@@ -343,19 +346,36 @@ export class MainGame extends Scene {
   }
 
   /**
+   * Warn the player once the day is almost over.
+   */
+  showDayEndingWarning() {
+    const timeLeft = this.state.dayTime - this.state.dayTimer;
+
+    if (this.hasShownDayEndingWarning || timeLeft > 10000) return;
+
+    this.hasShownDayEndingWarning = true;
+    this.uiDisplay.showMessage("Day ending soon!", 10000);
+  }
+
+  /**
    * Resolve end-of-day quota logic and log the result.
    */
   endDay() {
     const result = this.state.endDay();
 
-    if (result.success) {
-      this.terrain.resetWateredTiles();
+    if (!result.success) {
+      this.uiDisplay.showMessage(result.message, Infinity);
+      return;
     }
 
-    this.uiDisplay.showMessage(result.message);
+    this.terrain.resetWateredTiles();
+    this.hasShownDayEndingWarning = false;
+
+    this.uiDisplay.showMessage(result.message, 3000);
+
     if (result.nextDayMessage) {
-      this.time.delayedCall(1600, () => {
-        this.uiDisplay.showMessage(result.nextDayMessage);
+      this.time.delayedCall(3200, () => {
+        this.uiDisplay.showMessage(result.nextDayMessage, 7000);
       });
     }
   }

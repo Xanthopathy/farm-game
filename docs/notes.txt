@@ -15,7 +15,7 @@ MUST-FIX LOOP CHECKLIST
 [X] Reset tile watered states at the start of each new day
 [X] Show clear on-screen feedback for failed actions
     Examples: "Needs tilled soil", "Already watered", "Out of water", "Crop not ready"
-[ ] Add a visible "day ending soon" warning in the last 10 seconds
+[X] Add a visible "day ending soon" warning in the last 10 seconds
 [ ] Add crop-ready feedback
     Examples: sparkle, bounce, tint, or small harvest prompt
 

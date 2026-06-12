@@ -68,15 +68,18 @@ export class UIDisplay {
     this.positionMessage(debugDisplay);
   }
 
-  showMessage(message) {
+  showMessage(message, duration = 1500) {
     this.messageText.setText(message);
     this.messageText.setVisible(true);
 
     if (this.messageTimer) {
       this.messageTimer.remove();
+      this.messageTimer = null;
     }
 
-    this.messageTimer = this.scene.time.delayedCall(1500, () => {
+    if (duration === Infinity) return;
+
+    this.messageTimer = this.scene.time.delayedCall(duration, () => {
       this.messageText.setText("");
       this.messageText.setVisible(false);
       this.messageTimer = null;

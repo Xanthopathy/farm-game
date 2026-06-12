@@ -36,7 +36,7 @@ export class GameState {
       this.isDayActive = false;
       return {
         success: false,
-        message: `Failed to pay quota! Needed ${this.quota}g shipped today, shipped ${this.todayShippedValue}g. Game Over!`,
+        message: `Failed to pay quota!\nNeeded ${this.quota}g shipped today,\nshipped ${this.todayShippedValue}g.\nGame Over!`,
       };
     }
 
@@ -51,8 +51,8 @@ export class GameState {
 
     return {
       success: true,
-      message: `Paid quota of ${paidQuota}g. Remaining gold: ${this.gold}g`,
-      nextDayMessage: `Day ${this.day} started! New quota: ${this.quota}g`,
+      message: `Paid quota of ${paidQuota}g.\nRemaining gold: ${this.gold}g`,
+      nextDayMessage: `Day ${this.day} started!\nNew quota: ${this.quota}g`,
     };
   }
 
