@@ -155,8 +155,8 @@ export const CROP_TYPES = {
   },
   CORN: {
     name: "Corn",
-    seedFrame = 24,
-    produceFrame = 25,
+    seedFrame: 24,
+    produceFrame: 25,
     frames: [
       26, // Stage 0 (Seed)
       27, // Stage 1
