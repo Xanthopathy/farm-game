@@ -64,9 +64,10 @@ export class MainGame extends Scene {
     const KeyCodes = Phaser.Input.Keyboard.KeyCodes;
     this.spaceBar = this.input.keyboard.addKey(KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(KeyCodes.SHIFT);
+    this.qKey = this.input.keyboard.addKey(KeyCodes.Q);
+    this.eKey = this.input.keyboard.addKey(KeyCodes.E);
     this.gKey = this.input.keyboard.addKey(KeyCodes.G);
     this.bKey = this.input.keyboard.addKey(KeyCodes.B);
-    this.rKey = this.input.keyboard.addKey(KeyCodes.R);
 
     this.input.on("pointerdown", (pointer) => {
       if (pointer.leftButtonDown()) {
@@ -156,12 +157,20 @@ export class MainGame extends Scene {
       this.showDebugText = !this.showDebugText;
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.rKey)) {
-      this.state.cycleSelectedCrop(1);
-      this.uiDisplay.showMessage(
-        `Selected seeds: ${CROP_TYPES[this.state.selectedCropKey].name}`,
-      );
+    if (Phaser.Input.Keyboard.JustDown(this.qKey)) {
+      this.cycleSelectedCrop(-1);
     }
+
+    if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
+      this.cycleSelectedCrop(1);
+    }
+  }
+
+  cycleSelectedCrop(direction) {
+    this.state.cycleSelectedCrop(direction);
+    this.uiDisplay.showMessage(
+      `Selected seeds: ${CROP_TYPES[this.state.selectedCropKey].name}`,
+    );
   }
 
   /**
