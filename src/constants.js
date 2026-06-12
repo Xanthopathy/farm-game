@@ -134,11 +134,15 @@ export const FENCE_BITMASK_TABLE = {
   0: 51,
 };
 
+export const CROP_ORDER = ["WHEAT", "CORN", "TURNIP", "PUMPKIN", "GARLIC"];
+
 export const CROP_TYPES = {
   WHEAT: {
     name: "Wheat",
+    seedFrame: 96,
+    produceFrame: 112,
     frames: [
-      113, // Stage 0
+      113, // Stage 0 (Seed)
       114, // Stage 1
       115, // Stage 2
       { bottom: 116, top: 100 }, // Stage 3
@@ -151,6 +155,8 @@ export const CROP_TYPES = {
   },
   CORN: {
     name: "Corn",
+    seedFrame = 24,
+    produceFrame = 25,
     frames: [
       26, // Stage 0 (Seed)
       27, // Stage 1
@@ -164,6 +170,8 @@ export const CROP_TYPES = {
   },
   TURNIP: {
     name: "Turnip",
+    seedFrame: 56,
+    produceFrame: 57,
     frames: [
       58, // Stage 0 (Seed)
       59, // Stage 1
@@ -171,11 +179,13 @@ export const CROP_TYPES = {
       61, // Stage 3
       { bottom: 62, top: 46 }, // Stage 4 (Harvestable)
     ],
-    growthTime: 0,
-    sellValue: 0,
+    growthTime: 2500,
+    sellValue: 5,
   },
   PUMPKIN: {
     name: "Pumpkin",
+    seedFrame: 88,
+    produceFrame: 89,
     frames: [
       90, // Stage 0 (Seed)
       91, // Stage 1
@@ -184,11 +194,13 @@ export const CROP_TYPES = {
       { bottom: 94, top: 78 }, // Stage 4
       { bottom: 95, top: 79 }, // Stage 5 (Harvestable)
     ],
-    growthTime: 0,
-    sellValue: 0,
+    growthTime: 7000,
+    sellValue: 18,
   },
   GARLIC: {
     name: "Garlic",
+    seedFrame: 120,
+    produceFrame: 121,
     frames: [
       122, // Stage 0 (Seed)
       123, // Stage 1
@@ -196,6 +208,8 @@ export const CROP_TYPES = {
       125, // Stage 3
       { bottom: 126, top: 110 }, // Stage 4 (Harvestable)
     ],
+    growthTime: 4000,
+    sellValue: 8,
   },
 };
 

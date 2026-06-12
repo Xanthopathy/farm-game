@@ -1,6 +1,6 @@
 // src/systems/GameState.js
 import { DAY_SETTINGS } from "../config/WorldConfig";
-import { CROP_TYPES } from "../constants";
+import { CROP_ORDER } from "../constants";
 
 export class GameState {
   constructor() {
@@ -17,7 +17,7 @@ export class GameState {
     this.quota = DAY_SETTINGS.startingQuota;
     this.gameOver = false;
 
-    this.cropOrder = Object.keys(CROP_TYPES);
+    this.cropOrder = CROP_ORDER;
     this.selectedCropIndex = this.cropOrder.indexOf("CORN");
     this.selectedCropKey = this.cropOrder[this.selectedCropIndex];
   }

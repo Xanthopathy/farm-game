@@ -42,7 +42,7 @@ export class UIDisplay {
 
   update(player, game, debugDisplay = null) {
     const toolName =
-      player.currentTool.label === TOOLS.SEEDS
+      player.currentTool === TOOLS.SEEDS
         ? `Seeds: ${CROP_TYPES[game.selectedCropKey].name}`
         : player.currentTool.label;
     const goldCount = game.gold;
