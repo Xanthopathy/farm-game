@@ -1,4 +1,7 @@
 // src/utils/SpriteUtils.js
+/**
+ * Creates fixed two-part objects where the top sprite is one tile above bottom.
+ */
 export const createStack = (scene, x, y, config, bottomDepth, topDepth) => {
   const bottom = scene.add
     .sprite(x, y, config.texture, config.frames.bottom)
@@ -14,8 +17,8 @@ export const createStack = (scene, x, y, config, bottomDepth, topDepth) => {
 };
 
 /**
- * Create a dynamic stacked sprite pair that can change frames
- * Perfect for crops that grow and need top/bottom sprites
+ * Supports crops whose later growth stages need a second sprite above the
+ * tile while earlier stages are only a bottom sprite.
  */
 export const createDynamicStack = (
   scene,

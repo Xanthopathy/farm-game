@@ -98,7 +98,7 @@ const BASE_BITMASK_PATTERN = {
   11: 59,
 };
 
-// Helper function to create offset tables
+// Grass and tilled soil share the same bitmask pattern at different sheet offsets.
 const createTableWithOffset = (offset) => {
   return Object.fromEntries(
     Object.entries(BASE_BITMASK_PATTERN).map(([mask, frame]) => [

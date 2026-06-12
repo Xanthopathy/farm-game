@@ -22,9 +22,6 @@ export class GameState {
     this.selectedCropKey = this.cropOrder[this.selectedCropIndex];
   }
 
-  /**
-   * Advance the active day timer and report when the day should end.
-   */
   updateDay(delta) {
     if (!this.isDayActive || this.gameOver) return false;
 
@@ -33,7 +30,8 @@ export class GameState {
   }
 
   /**
-   * Resolve the quota payment and either advance the day or end the run.
+   * End the day by checking production against the quota, then either start
+   * the next day or freeze the run in a game-over state.
    */
   endDay() {
     if (this.todayShippedValue < this.quota) {
@@ -61,16 +59,10 @@ export class GameState {
     };
   }
 
-  /**
-   * Restore the bucket to its maximum water capacity.
-   */
   refillWater() {
     this.water = this.maxWater;
   }
 
-  /**
-   * Consume one unit of water if any is available.
-   */
   spendWater() {
     if (this.water <= 0) return false;
 
@@ -79,8 +71,7 @@ export class GameState {
   }
 
   /**
-   *
-   * @param {*} direction
+   * @param {number} direction Positive for next crop, negative for previous crop.
    */
   cycleSelectedCrop(direction) {
     this.selectedCropIndex =
@@ -90,15 +81,12 @@ export class GameState {
     this.selectedCropKey = this.cropOrder[this.selectedCropIndex];
   }
 
-  /**
-   * Add a harvested crop to the pending shipment inventory.
-   */
   storeHarvest(harvestedCrop) {
     this.inventory.push(harvestedCrop);
   }
 
   /**
-   * Sell every stored crop and return the gold earned.
+   * Shipping increases both the wallet and today's quota progress.
    */
   sellInventory() {
     const totalGain = this.inventory.reduce(

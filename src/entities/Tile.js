@@ -8,20 +8,18 @@ export class Tile {
     this.scene = scene;
     this.x = x;
     this.y = y;
-    this.type = type; // "DIRT", "PATH", etc.
+    this.type = type;
     this.isTilled = false;
     this.isWatered = false;
     this.crop = null;
 
-    // For PATH tiles, add a dirt background layer
     if (type === "PATH") {
       scene.add
         .sprite(x, y, TILE_TYPES.DIRT.texture, TILE_TYPES.DIRT.frames.default)
         .setScale(2)
-        .setDepth(DEPTHS.TILE - 0.5); // Just below the PATH tile
+        .setDepth(DEPTHS.TILE - 0.5);
     }
 
-    // Select frame: use variation with chance, otherwise default
     let frameToUse = visualConfig.frames.default;
     if (
       visualConfig.frames.variations &&
@@ -31,7 +29,6 @@ export class Tile {
       frameToUse = Phaser.Utils.Array.GetRandom(visualConfig.frames.variations);
     }
 
-    // Create the visual representation
     this.sprite = scene.add
       .sprite(x, y, visualConfig.texture, frameToUse)
       .setScale(2)
@@ -43,7 +40,6 @@ export class Tile {
   }
 
   squishFX() {
-    // Add a little "squish" effect
     this.scene.tweens.add({
       targets: this.sprite,
       scale: 2.2,
@@ -88,11 +84,9 @@ export class Tile {
       const cropName = this.crop.type.name;
       const sellValue = this.crop.type.sellValue;
 
-      // Destroy crop sprites
       this.crop.destroy();
       this.crop = null;
 
-      // Reset tile state (back to tilled)
       this.isWatered = false;
       this.squishFX();
       return { cropName, sellValue };

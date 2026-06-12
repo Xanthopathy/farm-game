@@ -1,6 +1,6 @@
 // src/utils/GridMath.js
 /**
- * Convert pixel coordinates to grid coordinates
+ * Phaser object positions are pixels; farm interactions use logical tile coords.
  */
 export const getGridCoords = (x, y, tileSize) => {
   return {
@@ -10,7 +10,7 @@ export const getGridCoords = (x, y, tileSize) => {
 };
 
 /**
- * Convert grid coordinates to pixel coordinates (center of the tile)
+ * Sprites are placed at tile centers rather than top-left corners.
  */
 export const getPixelCoords = (gridX, gridY, tileSize) => {
   return {

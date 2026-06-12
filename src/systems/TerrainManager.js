@@ -30,9 +30,6 @@ export class TerrainManager {
     this.decorations = [];
   }
 
-  /**
-   * Build the visible terrain layers and apply initial edge bitmasks.
-   */
   create() {
     this.createGrassBackground();
     this.createFarmGrid();
@@ -40,7 +37,8 @@ export class TerrainManager {
   }
 
   /**
-   * Fill the screen outside the farm grid with randomized flat grass sprites.
+   * Grass outside the farm grid is stored separately so edge bitmasks can treat
+   * the farm boundary like a cutout in a larger grass field.
    */
   createGrassBackground() {
     const { cols, rows, gridXOffset, gridYOffset } = this.layout;
@@ -72,9 +70,6 @@ export class TerrainManager {
     }
   }
 
-  /**
-   * Build the farmable dirt grid and its cross-shaped path.
-   */
   createFarmGrid() {
     const { cols, rows, gridXOffset, gridYOffset } = this.layout;
 
@@ -100,9 +95,6 @@ export class TerrainManager {
     }
   }
 
-  /**
-   * Pick the base frame for a tile type, including its optional flat variations.
-   */
   getRandomizedFrame(visualConfig) {
     if (
       visualConfig.frames.variations &&
@@ -115,9 +107,6 @@ export class TerrainManager {
     return visualConfig.frames.default;
   }
 
-  /**
-   * Advance all crops according to their tile's current watered state.
-   */
   updateCrops(delta) {
     this.grid.forEach((row) => {
       row?.forEach((tile) => {
@@ -126,9 +115,6 @@ export class TerrainManager {
     });
   }
 
-  /**
-   * Clear watered state from every farm tile at the start of a new day
-   */
   resetWateredTiles() {
     this.grid.forEach((row, y) => {
       row?.forEach((tile, x) => {
@@ -140,15 +126,13 @@ export class TerrainManager {
     });
   }
 
-  /**
-   * Return the farm-grid tile at the given logical grid coordinate.
-   */
   getTile(gridX, gridY) {
     return this.grid[gridY]?.[gridX] ?? null;
   }
 
   /**
-   * Place a freestanding sprite at a logical grid coordinate.
+   * @param {number} gridX Logical grid column, not pixel x.
+   * @param {number} gridY Logical grid row, not pixel y.
    */
   placeDecoration(
     gridX,
@@ -167,9 +151,6 @@ export class TerrainManager {
     return sprite;
   }
 
-  /**
-   * Recalculate every grass and tilled edge frame.
-   */
   refreshTerrainBitmasks() {
     for (let y = 0; y < this.grassTiles.length; y++) {
       const row = this.grassTiles[y];
@@ -191,9 +172,6 @@ export class TerrainManager {
     });
   }
 
-  /**
-   * Recalculate edge frames for a changed tile and its immediate neighbors.
-   */
   refreshTerrainBitmasksAround(centerX, centerY) {
     for (const { dx, dy } of [{ dx: 0, dy: 0 }, ...BITMASK_NEIGHBORS]) {
       const x = centerX + dx;
@@ -209,7 +187,8 @@ export class TerrainManager {
   }
 
   /**
-   * Update one grass tile, preserving its randomized flat frame when fully surrounded.
+   * Fully surrounded grass uses its original random flat frame instead of the
+   * generic connected frame, preserving natural variation in open areas.
    */
   refreshGrassBitmaskAt(x, y) {
     const grass = this.grassTiles[y]?.[x];
@@ -227,9 +206,6 @@ export class TerrainManager {
     grass.setFrame(GRASS_BITMASK_TABLE[mask] ?? grass.flatFrame);
   }
 
-  /**
-   * Update one tilled tile's edge frame, including its watered texture variant.
-   */
   refreshTilledBitmaskAt(x, y) {
     const tile = this.getTile(x, y);
     if (!tile?.isTilled) return;
@@ -249,7 +225,8 @@ export class TerrainManager {
   }
 
   /**
-   * Get or create a watered copy of a tilled frame without tinting exposed dirt pixels.
+   * Watered tilled frames are generated lazily so bitmask variants still work
+   * without needing separate source art for every watered edge tile.
    */
   getWateredTilledTextureKey(frame) {
     const key = `tilled-watered-${frame}`;
@@ -297,16 +274,14 @@ export class TerrainManager {
     return key;
   }
 
-  /**
-   * Identify pixels that belong to tilled soil rather than exposed dirt.
-   */
   isTilledSoilPixel(red, green, blue, alpha) {
     if (alpha === 0) return false;
     return red < 160 && red > green && green >= blue;
   }
 
   /**
-   * Compute an 8-way bitmask where diagonal corners require both adjacent sides.
+   * Diagonal corners only connect when both adjacent cardinal sides connect,
+   * which avoids visually leaking corners through diagonal-only neighbors.
    */
   getCardinalGatedBitmask(x, y, isMatchingNeighbor) {
     const north = isMatchingNeighbor(x, y - 1);
@@ -328,9 +303,6 @@ export class TerrainManager {
     return mask;
   }
 
-  /**
-   * Treat anything outside the farm grid as grass for grass edge calculations.
-   */
   isGrassLike(x, y) {
     return !this.grid[y]?.[x];
   }

@@ -1,5 +1,5 @@
 // src/entities/Crop.js
-import { DEPTHS, CROP_TYPES } from "../constants";
+import { DEPTHS } from "../constants";
 import { createDynamicStack } from "../utils/SpriteUtils";
 
 export class Crop {
@@ -13,7 +13,6 @@ export class Crop {
     this.timer = 0;
     this.readyTween = null;
 
-    // Create dynamic stack for bottom/top sprite management
     this.sprites = createDynamicStack(
       scene,
       x,
@@ -23,7 +22,6 @@ export class Crop {
       DEPTHS.CROP_TOP,
     );
 
-    // Initialize with first frame
     const frame =
       typeof type.frames[0] === "number"
         ? type.frames[0]
@@ -34,7 +32,6 @@ export class Crop {
   update(delta, isWatered) {
     if (this.isMature) return false;
 
-    // Only grow if the tile underneath is watered
     if (isWatered) {
       this.timer += delta;
 
@@ -53,10 +50,8 @@ export class Crop {
 
     if (nextFrame != undefined) {
       if (typeof nextFrame === "number") {
-        // Single frame stage
         this.sprites.updateFrames(nextFrame, null);
       } else {
-        // Composite frame stage
         this.sprites.updateFrames(nextFrame.bottom, nextFrame.top);
       }
     }

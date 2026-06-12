@@ -60,9 +60,6 @@ export class MainGame extends Scene {
     this.uiDisplay = new UIDisplay(this);
   }
 
-  /**
-   * Register player-facing input that belongs to the main play scene.
-   */
   createInput() {
     const KeyCodes = Phaser.Input.Keyboard.KeyCodes;
     this.spaceBar = this.input.keyboard.addKey(KeyCodes.SPACE);
@@ -84,9 +81,6 @@ export class MainGame extends Scene {
     });
   }
 
-  /**
-   * Place fixed world objects that are not part of the farm tile grid.
-   */
   placeWorldObjects() {
     const binPixels = getPixelCoords(
       WORLD_OBJECT_POSITIONS.bin.gridX,
@@ -118,9 +112,6 @@ export class MainGame extends Scene {
     );
   }
 
-  /**
-   * Update movement, crops, keyboard actions, targeting, and day progression.
-   */
   update(time, delta) {
     if (!this.state.gameOver) {
       this.updatePlayer(delta);
@@ -145,9 +136,6 @@ export class MainGame extends Scene {
     this.uiDisplay.update(this.player, this.state, this.debugDisplay);
   }
 
-  /**
-   * Apply movement speed modifiers before delegating to the player entity.
-   */
   updatePlayer(delta) {
     this.player.speed = this.shift.isDown
       ? PLAYER_SPEED.slow
@@ -155,9 +143,6 @@ export class MainGame extends Scene {
     this.player.update(delta);
   }
 
-  /**
-   * Handle once-per-press keyboard actions for interaction and debug toggles.
-   */
   handleKeyboardActions() {
     if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
       this.handleInteraction();
@@ -180,7 +165,7 @@ export class MainGame extends Scene {
   }
 
   /**
-   * Calculate the grid tile directly in front of the player's facing direction.
+   * Facing-based interactions target the adjacent tile, not the tile underfoot.
    */
   calculateTargetCoordinates() {
     const { gridX, gridY } = getGridCoords(
@@ -208,9 +193,6 @@ export class MainGame extends Scene {
     }
   }
 
-  /**
-   * Start the current tool action against the captured target tile.
-   */
   handleInteraction() {
     if (this.player.isBusy || this.state.gameOver) return;
 
@@ -230,9 +212,6 @@ export class MainGame extends Scene {
     );
   }
 
-  /**
-   * Pick the correct tool animation frame for the current game state.
-   */
   getToolActionFrame(tool) {
     if (tool === TOOLS.NONE) return null;
     if (tool === TOOLS.BUCKET && this.state.water === 0) {
@@ -242,7 +221,8 @@ export class MainGame extends Scene {
   }
 
   /**
-   * Handle interactions with fixed world objects before tile interactions.
+   * World objects get priority over farm tiles so the well/bin can sit near
+   * the grid without accidentally triggering tile behavior.
    */
   handleObjectInteraction(target, tool) {
     if (this.isWellTarget(target) && tool === TOOLS.BUCKET) {
@@ -261,9 +241,6 @@ export class MainGame extends Scene {
     return false;
   }
 
-  /**
-   * Apply the selected tool's behavior to a farm-grid tile.
-   */
   handleTileInteraction(tile, tool, target) {
     if (!tile) {
       this.uiDisplay.showMessage("Nothing to use that on");
@@ -300,9 +277,6 @@ export class MainGame extends Scene {
     }
   }
 
-  /**
-   * Water a dry tilled tile and refresh its terrain texture.
-   */
   waterTile(tile, target) {
     if (this.state.water <= 0) {
       this.uiDisplay.showMessage("Out of water");
@@ -325,9 +299,6 @@ export class MainGame extends Scene {
     this.uiDisplay.showMessage(`Water left: ${this.state.water}`);
   }
 
-  /**
-   * Harvest a mature crop and move it into shipment inventory.
-   */
   harvestTile(tile, target) {
     const harvested = tile.harvest();
     if (!harvested) {
@@ -340,9 +311,6 @@ export class MainGame extends Scene {
     this.uiDisplay.showMessage(`Stored ${harvested.cropName} in inventory`);
   }
 
-  /**
-   * Sell all harvested crops currently held in shipment inventory.
-   */
   sellCrops() {
     if (this.state.inventory.length === 0) {
       this.uiDisplay.showMessage("Inventory empty!");
@@ -356,7 +324,7 @@ export class MainGame extends Scene {
   }
 
   /**
-   * Warn the player once the day is almost over.
+   * Fire once per day so the long warning message is not reset every frame.
    */
   showDayEndingWarning() {
     const timeLeft = this.state.dayTime - this.state.dayTimer;
@@ -368,7 +336,7 @@ export class MainGame extends Scene {
   }
 
   /**
-   * Resolve end-of-day quota logic and log the result.
+   * Game-over messages stay pinned because gameplay stops updating.
    */
   endDay() {
     const result = this.state.endDay();
@@ -390,9 +358,6 @@ export class MainGame extends Scene {
     }
   }
 
-  /**
-   * Check whether the target tile overlaps the well interaction area.
-   */
   isWellTarget(target) {
     const well = WORLD_OBJECT_POSITIONS.well;
     return (
@@ -401,9 +366,6 @@ export class MainGame extends Scene {
     );
   }
 
-  /**
-   * Check whether the target tile is the shipping bin interaction area.
-   */
   isShippingBinTarget(target) {
     const bin = WORLD_OBJECT_POSITIONS.bin;
     return target.x === bin.gridX && target.y === bin.gridY;

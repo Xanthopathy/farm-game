@@ -6,7 +6,6 @@ import { getPixelCoords } from "../utils/GridMath";
 
 export class Player extends Phaser.GameObjects.Sprite {
   constructor(scene, gridX, gridY, tileSize) {
-    // Calculate pixel position from grid coordinates
     const { x, y } = getPixelCoords(gridX, gridY, tileSize);
     super(scene, x, y, "player_idle", 0);
 
@@ -48,9 +47,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     ];
     this.selectedToolIndex = 0;
     this.currentTool = this.toolOrder[this.selectedToolIndex];
-    this.isBusy = false; // Action delay
+    this.isBusy = false;
 
-    // Visual indicator for tools during action
     this.toolVisual = scene.add.sprite(
       this.x,
       this.y,
@@ -60,7 +58,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.toolVisual.setScale(1.5);
     this.toolVisual.setDepth(DEPTHS.PLAYER + 1);
     this.toolVisual.setVisible(false);
-    this.toolVisual.setOrigin(0.5, 1); // Set origin to bottom for a "swing" effect
+    this.toolVisual.setOrigin(0.5, 1);
   }
 
   createAnimations() {
@@ -109,7 +107,6 @@ export class Player extends Phaser.GameObjects.Sprite {
   performAction(duration, callback, frame = this.currentTool.frames.default) {
     const tool = this.currentTool;
     if (!tool.texture) {
-      // If no tool is equipped, we still want the delay/callback but no visual
       this.isBusy = true;
       this.scene.time.delayedCall(duration, () => {
         this.isBusy = false;
@@ -121,7 +118,6 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.isBusy = true;
     const isLeft = this.facing === "left";
 
-    // Position and show the tool
     let ox = 0,
       oy = 0;
     if (this.facing === "right") ox = 12;
@@ -137,7 +133,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     const startAngle = isLeft ? 75 : -75;
     const endAngle = isLeft ? -75 : 75;
     this.toolVisual.setAngle(startAngle);
-    // Swing animation
+
     this.scene.tweens.add({
       targets: this.toolVisual,
       angle: endAngle,
@@ -155,7 +151,7 @@ export class Player extends Phaser.GameObjects.Sprite {
   handleMovement(delta) {
     if (this.isBusy) return;
 
-    const moveDistance = this.speed * (delta / 1000); // Use delta for smooth movement
+    const moveDistance = this.speed * (delta / 1000);
     let moveX = 0;
     let moveY = 0;
 
@@ -175,13 +171,11 @@ export class Player extends Phaser.GameObjects.Sprite {
       if (moveX === 0) this.facing = "down";
     }
 
-    // Normalize diagonal movement (prevents moving faster diagonally)
     if (moveX !== 0 && moveY !== 0) {
       moveX *= Math.SQRT1_2;
       moveY *= Math.SQRT1_2;
     }
 
-    // Animation Logic
     const animDir = this.facing === "left" ? "right" : this.facing;
     this.setFlipX(this.facing === "left");
 
@@ -196,7 +190,6 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   handleToolSelection() {
-    // JustDown = once per press
     const JustDown = Phaser.Input.Keyboard.JustDown;
     if (JustDown(this.toolKeys.none)) {
       this.selectToolByIndex(0);

@@ -15,7 +15,7 @@ export class UIDisplay {
         padding: { x: 5, y: 5 },
       })
       .setOrigin(0, 0)
-      .setScrollFactor(0) // Ensures it stays fixed to the screen
+      .setScrollFactor(0)
       .setDepth(1000);
 
     this.toolIcon = scene.add
@@ -71,6 +71,9 @@ export class UIDisplay {
     this.positionMessage(debugDisplay);
   }
 
+  /**
+   * @param {number} duration Milliseconds to show the message, or Infinity to pin it.
+   */
   showMessage(message, duration = 1500) {
     this.messageText.setText(message);
     this.messageText.setVisible(true);
